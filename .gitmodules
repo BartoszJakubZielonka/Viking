@@ -13,3 +13,6 @@
 [submodule "Viking/Vendor/yaml-cpp"]
 	path = Viking/Vendor/yaml-cpp
 	url = https://github.com/BartoszJakubZielonka/yaml-cpp.git
+[submodule "Viking/Vendor/ImGuizmo"]
+	path = Viking/Vendor/ImGuizmo
+	url = https://github.com/CedricGuillemet/ImGuizmo.git
