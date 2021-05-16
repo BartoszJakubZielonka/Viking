@@ -5,10 +5,20 @@
 #ifndef VIKING_OPENGLCONTEXT_H
 #define VIKING_OPENGLCONTEXT_H
 
+#include "Viking/Renderer/GraphicsContext.h"
 
-class OpenGLContext {
+struct GLFWwindow;
 
-};
+namespace Viking {
+    class OpenGLContext final: public GraphicsContext {
+    public:
+        OpenGLContext(GLFWwindow* windowHandle);
 
+        void init() override;
+        void swapBuffers() override;
+    private:
+        GLFWwindow* mWindowHandle;
+    };
+}
 
 #endif //VIKING_OPENGLCONTEXT_H

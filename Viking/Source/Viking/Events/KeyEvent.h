@@ -12,7 +12,7 @@ namespace Viking {
     class KeyEvent : public Event
     {
     public:
-        KeyCode getKeyCode() const { return m_KeyCode; }
+        KeyCode getKeyCode() const { return mKeyCode; }
 
         EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
     protected:
@@ -51,7 +51,7 @@ namespace Viking {
         std::string toString() const override
         {
             std::stringstream ss;
-            ss << "KeyReleasedEvent: " << m_eyCode;
+            ss << "KeyReleasedEvent: " << mKeyCode;
             return ss.str();
         }
 

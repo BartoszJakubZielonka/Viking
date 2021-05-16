@@ -21,12 +21,12 @@ namespace Viking {
         VI_CORE_ASSERT(!sInstance, "Application already exists");
         sInstance = this;
         mWindow = Window::create(WindowProps(name));
-        mWindow->setEventCallback(VI_BIND_EVENT_FN(Application::onEvent()));
+        mWindow->setEventCallback(VI_BIND_EVENT_FN(Application::onEvent));
 
         Renderer::init();
 
         mImGuiLayer = new ImGuiLayer();
-        PushOverlay(mImGuiLayer);
+        pushOverlay(mImGuiLayer);
     }
 
     Application::~Application() {
@@ -57,11 +57,11 @@ namespace Viking {
         VI_PROFILE_FUNCTION();
 
         EventDispatcher dispatcher(e);
-        dispatcher.Dispatch<WindowCloseEvent>(VI_BIND_EVENT_FN(Application::onWindowClose));
-        dispatcher.Dispatch<WindowResizeEvent>(VI_BIND_EVENT_FN(Application::onWindowResize));
+        dispatcher.dispatch<WindowCloseEvent>(VI_BIND_EVENT_FN(Application::onWindowClose));
+        dispatcher.dispatch<WindowResizeEvent>(VI_BIND_EVENT_FN(Application::onWindowResize));
 
         for (auto it = mLayerStack.rbegin(); it != mLayerStack.rend(); ++it) {
-            if (e.Handled)
+            if (e.handled)
                 break;
             (*it)->onEvent(e);
         }
@@ -97,12 +97,12 @@ namespace Viking {
         }
     }
 
-    bool Application::onWindowClose(Event &e) {
+    bool Application::onWindowClose(WindowCloseEvent& e) {
         mRunning = false;
         return true;
     }
 
-    bool Application::onWindowResize(Event &e) {
+    bool Application::onWindowResize(WindowResizeEvent& e) {
         VI_PROFILE_FUNCTION();
 
         if (e.getWidth() == 0 || e.getHeight() == 0)

@@ -17,28 +17,28 @@ namespace Viking {
         mLayerInsertIndex++;
     }
 
-    void LayerStack::PushOverlay(Layer* overlay)
+    void LayerStack::pushOverlay(Layer* overlay)
     {
         mLayers.emplace_back(overlay);
     }
 
-    void LayerStack::PopLayer(Layer* layer)
+    void LayerStack::popLayer(Layer* layer)
     {
         auto it = std::find(mLayers.begin(), mLayers.begin() + mLayerInsertIndex, layer);
         if (it != mLayers.begin() + mLayerInsertIndex)
         {
-            layer->OnDetach();
+            layer->onDetach();
             mLayers.erase(it);
             mLayerInsertIndex--;
         }
     }
 
-    void LayerStack::PopOverlay(Layer* overlay)
+    void LayerStack::popOverlay(Layer* overlay)
     {
         auto it = std::find(mLayers.begin() + mLayerInsertIndex, mLayers.end(), overlay);
         if (it != mLayers.end())
         {
-            overlay->OnDetach();
+            overlay->onDetach();
             mLayers.erase(it);
         }
     }

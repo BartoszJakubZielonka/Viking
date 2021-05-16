@@ -23,7 +23,7 @@ namespace Viking {
 
         static void submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform = glm::mat4(1.0f));
 
-        static RendererAPI::API GetAPI() { return RendererAPI::getAPI(); }
+        static RendererAPI::API getAPI() { return RendererAPI::getAPI(); }
     private:
         struct SceneData
         {

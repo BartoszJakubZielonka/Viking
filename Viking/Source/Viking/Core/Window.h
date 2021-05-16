@@ -7,7 +7,7 @@
 
 #include <sstream>
 #include "Viking/Core/Base.h"
-#include "Viking/Core/Event.h"
+#include "Viking/Events//Event.h"
 
 namespace Viking {
     struct WindowProps {
@@ -31,7 +31,7 @@ namespace Viking {
         [[nodiscard]] virtual uint32_t getHeight() const = 0;
 
         //Window attributes
-        virtual void setEventCallback(const eventCallbackFn& callback) = 0;
+        virtual void setEventCallback(const EventCallbackFn& callback) = 0;
         virtual void setVSync(bool enabled) = 0;
         [[nodiscard]] virtual bool isVSync() const = 0;
 

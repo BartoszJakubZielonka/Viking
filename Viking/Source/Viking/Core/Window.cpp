@@ -12,7 +12,7 @@ namespace Viking
 {
     Scope<Window> Window::create(const WindowProps props) {
 #ifdef VI_PLATFORM_WINDOWS
-        return createScope<WindowWindow>(props);
+        return createScope<WindowsWindow>(props);
 #else
         VI_CORE_ASSERT(false, "Unknown platform!");
         return nullptr;

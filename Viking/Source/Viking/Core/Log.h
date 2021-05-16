@@ -17,8 +17,12 @@ namespace Viking {
     public:
         static void init();
 
-        static Ref<spdlog::logger>& getCoreLogger();
-        static Ref<spdlog::logger>& getClientLogger();
+        static Ref<spdlog::logger>& getCoreLogger() {
+            return sCoreLogger;
+        };
+        static Ref<spdlog::logger>& getClientLogger() {
+            return sClientLogger;
+        };
 
     private:
         static Ref<spdlog::logger> sCoreLogger;
@@ -27,17 +31,17 @@ namespace Viking {
 }
 
 // Core log macros
-#define VI_CORE_TRACE(...)    ::Viking::Log::GetCoreLogger()->trace(__VA_ARGS__)
-#define VI_CORE_INFO(...)     ::Viking::Log::GetCoreLogger()->info(__VA_ARGS__)
-#define VI_CORE_WARN(...)     ::Viking::Log::GetCoreLogger()->warn(__VA_ARGS__)
-#define VI_CORE_ERROR(...)    ::Viking::Log::GetCoreLogger()->error(__VA_ARGS__)
-#define VI_CORE_CRITICAL(...) ::Viking::Log::GetCoreLogger()->critical(__VA_ARGS__)
+#define VI_CORE_TRACE(...)    ::Viking::Log::getCoreLogger()->trace(__VA_ARGS__)
+#define VI_CORE_INFO(...)     ::Viking::Log::getCoreLogger()->info(__VA_ARGS__)
+#define VI_CORE_WARN(...)     ::Viking::Log::getCoreLogger()->warn(__VA_ARGS__)
+#define VI_CORE_ERROR(...)    ::Viking::Log::getCoreLogger()->error(__VA_ARGS__)
+#define VI_CORE_CRITICAL(...) ::Viking::Log::getCoreLogger()->critical(__VA_ARGS__)
 
 // Client log macros
-#define VI_TRACE(...)         ::Viking::Log::GetClientLogger()->trace(__VA_ARGS__)
-#define VI_INFO(...)          ::Viking::Log::GetClientLogger()->info(__VA_ARGS__)
-#define VI_WARN(...)          ::Viking::Log::GetClientLogger()->warn(__VA_ARGS__)
-#define VI_ERROR(...)         ::Viking::Log::GetClientLogger()->error(__VA_ARGS__)
-#define VI_CRITICAL(...)      ::Viking::Log::GetClientLogger()->critical(__VA_ARGS__)
+#define VI_TRACE(...)         ::Viking::Log::getClientLogger()->trace(__VA_ARGS__)
+#define VI_INFO(...)          ::Viking::Log::getClientLogger()->info(__VA_ARGS__)
+#define VI_WARN(...)          ::Viking::Log::getClientLogger()->warn(__VA_ARGS__)
+#define VI_ERROR(...)         ::Viking::Log::getClientLogger()->error(__VA_ARGS__)
+#define VI_CRITICAL(...)      ::Viking::Log::getClientLogger()->critical(__VA_ARGS__)
 
 #endif //VIKING_LOG_H

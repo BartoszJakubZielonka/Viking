@@ -25,7 +25,7 @@ namespace Viking {
 
         virtual void drawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount = 0) = 0;
 
-        static API getApi() {
+        static API getAPI() {
             return sAPI;
         }
         static Scope<RendererAPI> create();

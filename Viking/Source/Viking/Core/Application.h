@@ -34,7 +34,7 @@ namespace Viking {
         Application(const std::string& name = "Viking App", ApplicationCommandLineArgs args = ApplicationCommandLineArgs());
         virtual ~Application();
 
-        void onEvent(Evemt& e);
+        void onEvent(Event& e);
 
         void pushLayer(Layer* layer);
         void pushOverlay(Layer* layer);

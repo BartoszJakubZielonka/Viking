@@ -3,6 +3,8 @@
 //
 
 #include "Log.h"
+#include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/sinks/basic_file_sink.h>
 
 namespace Viking {
     Ref<spdlog::logger> Log::sCoreLogger;
@@ -17,13 +19,13 @@ namespace Viking {
         logSinks[1]->set_pattern("[%T] [%l] %n: %v");
 
         sCoreLogger = std::make_shared<spdlog::logger>("Viking", begin(logSinks), end(logSinks));
-        spdlog::register_logger(s_CoreLogger);
-        s_CoreLogger->set_level(spdlog::level::trace);
-        s_CoreLogger->flush_on(spdlog::level::trace);
+        spdlog::register_logger(sCoreLogger);
+        sCoreLogger->set_level(spdlog::level::trace);
+        sCoreLogger->flush_on(spdlog::level::trace);
 
         sClientLogger = std::make_shared<spdlog::logger>("APP", begin(logSinks), end(logSinks));
-        spdlog::register_logger(s_ClientLogger);
-        s_ClientLogger->set_level(spdlog::level::trace);
-        s_ClientLogger->flush_on(spdlog::level::trace);
+        spdlog::register_logger(sClientLogger);
+        sClientLogger->set_level(spdlog::level::trace);
+        sClientLogger->flush_on(spdlog::level::trace);
     }
 }

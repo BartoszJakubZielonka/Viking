@@ -33,6 +33,7 @@ namespace Viking {
     };
 
     class WindowCloseEvent: public Event {
+    public:
         WindowCloseEvent() = default;
 
         EVENT_CLASS_TYPE(WindowClose)
@@ -40,6 +41,7 @@ namespace Viking {
     };
 
     class AppTickEvent: public Event {
+    public:
         AppTickEvent() = default;
 
         EVENT_CLASS_TYPE(AppTick)

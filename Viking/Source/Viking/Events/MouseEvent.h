@@ -5,8 +5,8 @@
 #ifndef VIKING_MOUSEEVENT_H
 #define VIKING_MOUSEEVENT_H
 
-#include "Hazel/Events/Event.h"
-#include "Hazel/Core/MouseCodes.h"
+#include "Viking/Events/Event.h"
+#include "Viking/Core/MouseCodes.h"
 
 namespace Viking {
 
@@ -37,8 +37,8 @@ namespace Viking {
         MouseScrolledEvent(const float xOffset, const float yOffset)
                 : mXOffset(xOffset), mYOffset(yOffset) {}
 
-        float getXOffset() const { return m_XOffset; }
-        float getYOffset() const { return m_YOffset; }
+        float getXOffset() const { return mXOffset; }
+        float getYOffset() const { return mYOffset; }
 
         std::string toString() const override
         {

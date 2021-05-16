@@ -76,7 +76,7 @@ namespace Viking {
         Event& mEvent;
     };
 
-    inline std::ostream operator<<(std::ostream& os, const Event& e) {
+    inline std::ostream& operator<<(std::ostream& os, const Event& e) {
         return os << e.toString();
     }
 }

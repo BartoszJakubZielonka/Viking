@@ -8,9 +8,9 @@
 namespace Viking {
     class Timestep {
     public:
-        explicit Timestep(float time = 0.0f): mTime(time) {}
+        Timestep(float time = 0.0f): mTime(time) {}
 
-        explicit operator float() const {
+        operator float() const {
             return mTime;
         }
 

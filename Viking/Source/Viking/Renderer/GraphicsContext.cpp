@@ -11,7 +11,7 @@ namespace Viking {
 
     Scope<GraphicsContext> GraphicsContext::create(void* window)
     {
-        switch (Renderer::GetAPI())
+        switch (Renderer::getAPI())
         {
             case RendererAPI::API::None:
                 VI_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");
