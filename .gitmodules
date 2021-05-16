@@ -10,3 +10,6 @@
 [submodule "Viking/Vendor/imgui"]
 	path = Viking/Vendor/imgui
 	url = https://github.com/BartoszJakubZielonka/imgui.git
+[submodule "Viking/Vendor/yaml-cpp"]
+	path = Viking/Vendor/yaml-cpp
+	url = https://github.com/BartoszJakubZielonka/yaml-cpp.git
