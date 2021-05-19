@@ -3,7 +3,7 @@
 //
 #include "vipch.h"
 #include "OpenGLVertexArray.h"
-#include <glad/glad.h>
+#include <glad/gl.h>
 
 namespace Viking {
     static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type) {
@@ -54,7 +54,7 @@ namespace Viking {
     void OpenGLVertexArray::addVertexBuffer(const Ref<VertexBuffer> &vertexBuffer) {
         VI_PROFILE_FUNCTION();
 
-        HZ_CORE_ASSERT(vertexBuffer->getLayout().GetElements().size(), "Vertex Buffer has no layout!");
+        VI_CORE_ASSERT(vertexBuffer->getLayout().getElements().size(), "Vertex Buffer has no layout!");
 
         glBindVertexArray(mRendererID);
         vertexBuffer->bind();

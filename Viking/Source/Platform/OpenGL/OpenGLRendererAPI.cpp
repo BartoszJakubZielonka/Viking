@@ -4,7 +4,7 @@
 #include "vipch.h"
 #include "Platform/OpenGL/OpenGLRendererAPI.h"
 
-#include <glad/glad.h>
+#include <glad/gl.h>
 
 namespace Viking {
     void openGLMessageCallback(unsigned source, unsigned type, unsigned id, unsigned severity, int length, const char* message, const void* userParam)

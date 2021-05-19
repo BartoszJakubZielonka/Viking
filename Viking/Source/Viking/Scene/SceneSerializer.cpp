@@ -86,23 +86,23 @@ namespace Viking {
         out << YAML::BeginMap; // Entity
         out << YAML::Key << "Entity" << YAML::Value << "12837192831273"; // TODO: Entity ID goes here
 
-        if (entity.HasComponent<TagComponent>())
+        if (entity.hasComponent<TagComponent>())
         {
             out << YAML::Key << "TagComponent";
             out << YAML::BeginMap; // TagComponent
 
-            auto& tag = entity.GetComponent<TagComponent>().Tag;
+            auto& tag = entity.getComponent<TagComponent>().Tag;
             out << YAML::Key << "Tag" << YAML::Value << tag;
 
             out << YAML::EndMap; // TagComponent
         }
 
-        if (entity.HasComponent<TransformComponent>())
+        if (entity.hasComponent<TransformComponent>())
         {
             out << YAML::Key << "TransformComponent";
             out << YAML::BeginMap; // TransformComponent
 
-            auto& tc = entity.GetComponent<TransformComponent>();
+            auto& tc = entity.getComponent<TransformComponent>();
             out << YAML::Key << "Translation" << YAML::Value << tc.Translation;
             out << YAML::Key << "Rotation" << YAML::Value << tc.Rotation;
             out << YAML::Key << "Scale" << YAML::Value << tc.Scale;
@@ -110,23 +110,23 @@ namespace Viking {
             out << YAML::EndMap; // TransformComponent
         }
 
-        if (entity.HasComponent<CameraComponent>())
+        if (entity.hasComponent<CameraComponent>())
         {
             out << YAML::Key << "CameraComponent";
             out << YAML::BeginMap; // CameraComponent
 
-            auto& cameraComponent = entity.GetComponent<CameraComponent>();
+            auto& cameraComponent = entity.getComponent<CameraComponent>();
             auto& camera = cameraComponent.Camera;
 
             out << YAML::Key << "Camera" << YAML::Value;
             out << YAML::BeginMap; // Camera
-            out << YAML::Key << "ProjectionType" << YAML::Value << (int)camera.GetProjectionType();
-            out << YAML::Key << "PerspectiveFOV" << YAML::Value << camera.GetPerspectiveVerticalFOV();
-            out << YAML::Key << "PerspectiveNear" << YAML::Value << camera.GetPerspectiveNearClip();
-            out << YAML::Key << "PerspectiveFar" << YAML::Value << camera.GetPerspectiveFarClip();
-            out << YAML::Key << "OrthographicSize" << YAML::Value << camera.GetOrthographicSize();
-            out << YAML::Key << "OrthographicNear" << YAML::Value << camera.GetOrthographicNearClip();
-            out << YAML::Key << "OrthographicFar" << YAML::Value << camera.GetOrthographicFarClip();
+            out << YAML::Key << "ProjectionType" << YAML::Value << (int)camera.getProjectionType();
+            out << YAML::Key << "PerspectiveFOV" << YAML::Value << camera.getPerspectiveVerticalFOV();
+            out << YAML::Key << "PerspectiveNear" << YAML::Value << camera.getPerspectiveNearClip();
+            out << YAML::Key << "PerspectiveFar" << YAML::Value << camera.getPerspectiveFarClip();
+            out << YAML::Key << "OrthographicSize" << YAML::Value << camera.getOrthographicSize();
+            out << YAML::Key << "OrthographicNear" << YAML::Value << camera.getOrthographicNearClip();
+            out << YAML::Key << "OrthographicFar" << YAML::Value << camera.getOrthographicFarClip();
             out << YAML::EndMap; // Camera
 
             out << YAML::Key << "Primary" << YAML::Value << cameraComponent.Primary;
@@ -135,12 +135,12 @@ namespace Viking {
             out << YAML::EndMap; // CameraComponent
         }
 
-        if (entity.HasComponent<SpriteRendererComponent>())
+        if (entity.hasComponent<SpriteRendererComponent>())
         {
             out << YAML::Key << "SpriteRendererComponent";
             out << YAML::BeginMap; // SpriteRendererComponent
 
-            auto& spriteRendererComponent = entity.GetComponent<SpriteRendererComponent>();
+            auto& spriteRendererComponent = entity.getComponent<SpriteRendererComponent>();
             out << YAML::Key << "Color" << YAML::Value << spriteRendererComponent.Color;
 
             out << YAML::EndMap; // SpriteRendererComponent
@@ -150,7 +150,7 @@ namespace Viking {
     }
 
 
-    void SceneSerializer::Serialize(const std::string &filepath) {
+    void SceneSerializer::serialize(const std::string &filepath) {
         YAML::Emitter out;
         out << YAML::BeginMap;
         out << YAML::Key << "Scene" << YAML::Value << "Untitled";
@@ -162,7 +162,7 @@ namespace Viking {
             if (!entity)
                 return;
 
-            SerializeEntity(out, entity);
+            serializeEntity(out, entity);
         });
 
         out << YAML::EndSeq;
@@ -172,7 +172,7 @@ namespace Viking {
         fout << out.c_str();
     }
 
-    void SceneSerializer::SerializeRuntime(const std::string &filepath) {
+    void SceneSerializer::serializeRuntime(const std::string &filepath) {
         // Not implemented
         VI_CORE_ASSERT(false, "Not implemented");
     }
@@ -217,15 +217,15 @@ namespace Viking {
                     auto& cc = deserializedEntity.addComponent<CameraComponent>();
 
                     auto& cameraProps = cameraComponent["Camera"];
-                    cc.Camera.SetProjectionType((SceneCamera::ProjectionType)cameraProps["ProjectionType"].as<int>());
+                    cc.Camera.setProjectionType((SceneCamera::ProjectionType)cameraProps["ProjectionType"].as<int>());
 
-                    cc.Camera.SetPerspectiveVerticalFOV(cameraProps["PerspectiveFOV"].as<float>());
-                    cc.Camera.SetPerspectiveNearClip(cameraProps["PerspectiveNear"].as<float>());
-                    cc.Camera.SetPerspectiveFarClip(cameraProps["PerspectiveFar"].as<float>());
+                    cc.Camera.setPerspectiveVerticalFOV(cameraProps["PerspectiveFOV"].as<float>());
+                    cc.Camera.setPerspectiveNearClip(cameraProps["PerspectiveNear"].as<float>());
+                    cc.Camera.setPerspectiveFarClip(cameraProps["PerspectiveFar"].as<float>());
 
-                    cc.Camera.SetOrthographicSize(cameraProps["OrthographicSize"].as<float>());
-                    cc.Camera.SetOrthographicNearClip(cameraProps["OrthographicNear"].as<float>());
-                    cc.Camera.SetOrthographicFarClip(cameraProps["OrthographicFar"].as<float>());
+                    cc.Camera.setOrthographicSize(cameraProps["OrthographicSize"].as<float>());
+                    cc.Camera.setOrthographicNearClip(cameraProps["OrthographicNear"].as<float>());
+                    cc.Camera.setOrthographicFarClip(cameraProps["OrthographicFar"].as<float>());
 
                     cc.Primary = cameraComponent["Primary"].as<bool>();
                     cc.FixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();

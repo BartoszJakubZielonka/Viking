@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+.vs/
+bin/
+*.sln
+*.vcxproj*
+__pycache__/

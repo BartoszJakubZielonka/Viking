@@ -4,6 +4,9 @@
 #include "vipch.h"
 #include "UniformBuffer.h"
 
+#include "Renderer.h"
+#include "Platform/OpenGL/OpenGLUniformBuffer.h"
+
 namespace Viking {
 
     Ref<UniformBuffer> UniformBuffer::create(uint32_t size, uint32_t binding) {

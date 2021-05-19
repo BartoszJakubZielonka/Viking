@@ -34,12 +34,12 @@ namespace Viking {
                 // TODO: Move to Scene::OnScenePlay
                 if (!nsc.Instance)
                 {
-                    nsc.Instance = nsc.InstantiateScript();
+                    nsc.Instance = nsc.instantiateScript();
                     nsc.Instance->mEntity = Entity{ entity, this };
-                    nsc.Instance->OnCreate();
+                    nsc.Instance->onCreate();
                 }
 
-                nsc.Instance->OnUpdate(ts);
+                nsc.Instance->onUpdate(ts);
             });
         }
 
@@ -55,7 +55,7 @@ namespace Viking {
                 if (camera.Primary)
                 {
                     mainCamera = &camera.Camera;
-                    cameraTransform = transform.GetTransform();
+                    cameraTransform = transform.getTransform();
                     break;
                 }
             }
@@ -70,7 +70,7 @@ namespace Viking {
             {
                 auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
-                Renderer2D::drawSprite(transform.GetTransform(), sprite, (int)entity);
+                Renderer2D::drawSprite(transform.getTransform(), sprite, (int)entity);
             }
 
             Renderer2D::endScene();
@@ -85,10 +85,24 @@ namespace Viking {
         {
             auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
-            Renderer2D::drawSprite(transform.GetTransform(), sprite, (int)entity);
+            Renderer2D::drawSprite(transform.getTransform(), sprite, (int)entity);
         }
 
         Renderer2D::endScene();
+    }
+
+    void Scene::onViewportResize(uint32_t width, uint32_t height)
+    {
+        mViewportWidth = width;
+        mViewportHeight = height;
+
+        // Resize our non-FixedAspectRatio cameras
+        auto view = mRegistry.view<CameraComponent>();
+        for (auto entity : view)
+        {
+            if (auto & cameraComponent = view.get<CameraComponent>(entity); !cameraComponent.FixedAspectRatio)
+                cameraComponent.Camera.setViewportSize(width, height);
+        }
     }
 
     Entity Scene::getPrimaryCameraEntity() {
@@ -108,10 +122,15 @@ namespace Viking {
     }
 
     template<>
+    void Scene::onComponentAdded<TransformComponent>(Entity entity, TransformComponent& component)
+    {
+    }
+
+    template<>
     void Scene::onComponentAdded<CameraComponent>(Entity entity, CameraComponent& component)
     {
         if (mViewportWidth > 0 && mViewportHeight > 0)
-            component.Camera.SetViewportSize(mViewportWidth, mViewportHeight);
+            component.Camera.setViewportSize(mViewportWidth, mViewportHeight);
     }
 
     template<>

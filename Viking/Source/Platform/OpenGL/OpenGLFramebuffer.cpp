@@ -4,7 +4,7 @@
 #include "vipch.h"
 #include "Platform/OpenGL/OpenGLFramebuffer.h"
 
-#include <glad/glad.h>
+#include <glad/gl.h>
 
 namespace Viking {
     static const uint32_t sMaxFramebufferSize = 8192;
@@ -17,12 +17,12 @@ namespace Viking {
 
         static void createTextures(bool multisampled, uint32_t* outID, uint32_t count)
         {
-            glCreateTextures(TextureTarget(multisampled), count, outID);
+            glCreateTextures(textureTarget(multisampled), count, outID);
         }
 
         static void bindTexture(bool multisampled, uint32_t id)
         {
-            glBindTexture(TextureTarget(multisampled), id);
+            glBindTexture(textureTarget(multisampled), id);
         }
 
         static void attachColorTexture(uint32_t id, int samples, GLenum internalFormat, GLenum format, uint32_t width, uint32_t height, int index)
@@ -43,7 +43,7 @@ namespace Viking {
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             }
 
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, TextureTarget(multisampled), id, 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, textureTarget(multisampled), id, 0);
         }
 
         static void attachDepthTexture(uint32_t id, int samples, GLenum format, GLenum attachmentType, uint32_t width, uint32_t height)
@@ -64,7 +64,7 @@ namespace Viking {
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             }
 
-            glFramebufferTexture2D(GL_FRAMEBUFFER, attachmentType, TextureTarget(multisampled), id, 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, attachmentType, textureTarget(multisampled), id, 0);
         }
 
         static bool isDepthFormat(FramebufferTextureFormat format)
@@ -159,7 +159,7 @@ namespace Viking {
 
         if (mColorAttachments.size() > 1)
         {
-            HZ_CORE_ASSERT(mColorAttachments.size() <= 4);
+            VI_CORE_ASSERT(mColorAttachments.size() <= 4);
             GLenum buffers[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
             glDrawBuffers(mColorAttachments.size(), buffers);
         }
@@ -175,7 +175,7 @@ namespace Viking {
     }
 
     void OpenGLFramebuffer::bind() {
-        glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
+        glBindFramebuffer(GL_FRAMEBUFFER, mRendererID);
         glViewport(0, 0, mSpecification.Width, mSpecification.Height);
     }
 
@@ -195,7 +195,7 @@ namespace Viking {
         invalidate();
     }
 
-    int OpenGLFramebuffer::readPixel(uint32_t attachmentIndex, int x, int y) {
+    int OpenGLFramebuffer::readPixel(uint32_t attachmentIndex, int x, int y) const {
         VI_CORE_ASSERT(attachmentIndex < mColorAttachments.size());
 
         glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
@@ -204,7 +204,7 @@ namespace Viking {
         return pixelData;
     }
 
-    void OpenGLFramebuffer::clearAttachment(uint32_t attachmentIndex, int value) {
+    void OpenGLFramebuffer::clearAttachment(uint32_t attachmentIndex, int value) const {
         VI_CORE_ASSERT(attachmentIndex < mColorAttachments.size());
 
         auto& spec = mColorAttachmentSpecifications[attachmentIndex];

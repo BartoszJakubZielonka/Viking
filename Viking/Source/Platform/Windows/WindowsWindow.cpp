@@ -50,7 +50,7 @@ namespace Viking {
     }
 
     void WindowsWindow::setEventCallback(const EventCallbackFn &callback) {
-        mData.EventCallback = callback
+        mData.EventCallback = callback;
     }
 
     void WindowsWindow::setVSync(bool enabled) {

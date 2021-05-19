@@ -8,7 +8,7 @@
 #include <GLFW/glfw3.h>
 
 namespace Viking {
-    bool Input::isKeyPressed(const Key::KeyCode key)
+    bool Input::isKeyPressed(const KeyCode key)
     {
         auto* window = static_cast<GLFWwindow*>(Application::get().getWindow().getNativeWindow());
         auto state = glfwGetKey(window, static_cast<int32_t>(key));

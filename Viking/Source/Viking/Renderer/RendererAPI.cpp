@@ -3,6 +3,7 @@
 //
 #include "vipch.h"
 #include "RendererAPI.h"
+#include "Platform/OpenGL/OpenGLRendererAPI.h"
 
 namespace Viking {
     RendererAPI::API RendererAPI::sAPI = RendererAPI::API::OpenGL;
@@ -13,7 +14,7 @@ namespace Viking {
                 VI_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");
                 return nullptr;
             case RendererAPI::API::OpenGL:
-                return CreateScope<OpenGLRendererAPI>();
+                return createScope<OpenGLRendererAPI>();
         }
 
         VI_CORE_ASSERT(false, "Unknown RendererAPI!");

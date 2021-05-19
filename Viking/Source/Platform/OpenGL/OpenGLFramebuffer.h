@@ -19,11 +19,11 @@ namespace Viking {
         void unbind() override;
 
         void resize(uint32_t width, uint32_t height) override;
-        int readPixel(uint32_t attachmentIndex, int x, int y) override;
+        [[nodiscard]] int readPixel(uint32_t attachmentIndex, int x, int y) const override;
 
-        void clearAttachment(uint32_t attachmentIndex, int value) override;
+        void clearAttachment(uint32_t attachmentIndex, int value) const override;
 
-        uint32_t getColorAttachmentRendererID(uint32_t index = 0) const override {
+        [[nodiscard]] uint32_t getColorAttachmentRendererId(uint32_t index = 0) const override {
             VI_CORE_ASSERT(index < mColorAttachments.size());
             return mColorAttachments[index];
         }

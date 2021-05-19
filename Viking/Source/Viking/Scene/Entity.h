@@ -19,7 +19,7 @@ namespace Viking {
         template<typename T, typename... Args>
         T& addComponent(Args&&... args)
         {
-            VI_CORE_ASSERT(!HasComponent<T>(), "Entity already has component!");
+            VI_CORE_ASSERT(!hasComponent<T>(), "Entity already has component!");
             T& component = mScene->mRegistry.emplace<T>(mEntityHandle, std::forward<Args>(args)...);
             mScene->onComponentAdded<T>(*this, component);
             return component;
@@ -28,20 +28,20 @@ namespace Viking {
         template<typename T>
         T& getComponent()
         {
-            VI_CORE_ASSERT(HasComponent<T>(), "Entity does not have component!");
-            return mScene->m_Registry.get<T>(mEntityHandle);
+            VI_CORE_ASSERT(hasComponent<T>(), "Entity does not have component!");
+            return mScene->mRegistry.get<T>(mEntityHandle);
         }
 
         template<typename T>
         bool hasComponent()
         {
-            return mScene->m_Registry.has<T>(mEntityHandle);
+            return mScene->mRegistry.has<T>(mEntityHandle);
         }
 
         template<typename T>
         void removeComponent()
         {
-            VI_CORE_ASSERT(HasComponent<T>(), "Entity does not have component!");
+            VI_CORE_ASSERT(hasComponent<T>(), "Entity does not have component!");
             mScene->mRegistry.remove<T>(mEntityHandle);
         }
 

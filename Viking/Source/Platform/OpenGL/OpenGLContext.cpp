@@ -5,19 +5,19 @@
 #include "Platform/OpenGL/OpenGLContext.h"
 
 #include <GLFW/glfw3.h>
-#include <glad/glad.h>
+#include <glad/gl.h>
 
 namespace Viking {
 
     OpenGLContext::OpenGLContext(GLFWwindow *windowHandle): mWindowHandle(windowHandle) {
-        VI_CORE_ASSERT(windowHandle, "Window handle is null!")
+        VI_CORE_ASSERT(windowHandle, "Window handle is null!");
     }
 
     void OpenGLContext::init() {
         VI_PROFILE_FUNCTION();
 
         glfwMakeContextCurrent(mWindowHandle);
-        int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+        const int status = gladLoadGL(glfwGetProcAddress);
         VI_CORE_ASSERT(status, "Failed to initialize Glad!");
 
         VI_CORE_INFO("OpenGL Info:");
@@ -25,7 +25,12 @@ namespace Viking {
         VI_CORE_INFO("  Renderer: {0}", glGetString(GL_RENDERER));
         VI_CORE_INFO("  Version: {0}", glGetString(GL_VERSION));
 
-        HZ_CORE_ASSERT(GLVersion.major > 4 || (GLVersion.major == 4 && GLVersion.minor >= 5), "Hazel requires at least OpenGL version 4.5!");
+        int versionMajor;
+        int versionMinor;
+        glGetIntegerv(GL_MAJOR_VERSION, &versionMajor);
+        glGetIntegerv(GL_MINOR_VERSION, &versionMinor);
+
+        VI_CORE_ASSERT(versionMajor > 4 || (versionMajor == 4 && versionMinor >= 5), "Viking requires at least OpenGL version 4.5!");
     }
 
     void OpenGLContext::swapBuffers() {

@@ -5,7 +5,7 @@
 #include "Platform/OpenGL/OpenGLShader.h"
 
 #include <fstream>
-#include <glad/glad.h>
+#include <glad/gl.h>
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -58,7 +58,7 @@ namespace Viking {
 
         static void createCacheDirectoryIfNeeded()
         {
-            std::string cacheDirectory = GetCacheDirectory();
+            std::string cacheDirectory = getCacheDirectory();
             if (!std::filesystem::exists(cacheDirectory))
                 std::filesystem::create_directories(cacheDirectory);
         }
@@ -90,7 +90,7 @@ namespace Viking {
     OpenGLShader::OpenGLShader(const std::string &filepath): mFilePath(filepath) {
         VI_PROFILE_FUNCTION();
 
-        Utils::CreateCacheDirectoryIfNeeded();
+        Utils::createCacheDirectoryIfNeeded();
 
         std::string source = readFile(filepath);
         auto shaderSources = preProcess(source);
@@ -203,7 +203,7 @@ namespace Viking {
 
     void OpenGLShader::uploadUniformFloat3(const std::string &name, const glm::vec3 &value) {
         GLint location = glGetUniformLocation(mRendererID, name.c_str());
-        glUniform3f(location, value.x, value.y, value.z)
+        glUniform3f(location, value.x, value.y, value.z);
     }
 
     void OpenGLShader::uploadUniformFloat4(const std::string &name, const glm::vec4 &value) {
@@ -263,7 +263,7 @@ namespace Viking {
             VI_CORE_ASSERT(eol != std::string::npos, "Syntax error");
             size_t begin = pos + typeTokenLength + 1; //Start of shader type name (after "#type " keyword)
             std::string type = source.substr(begin, eol - begin);
-            HZ_CORE_ASSERT(Utils::shaderTypeFromString(type), "Invalid shader type specified");
+            VI_CORE_ASSERT(Utils::shaderTypeFromString(type), "Invalid shader type specified");
 
             size_t nextLinePos = source.find_first_not_of("\r\n", eol); //Start of shader code after shader type declaration line
             VI_CORE_ASSERT(nextLinePos != std::string::npos, "Syntax error");
@@ -411,7 +411,7 @@ namespace Viking {
 
             std::vector<GLchar> infoLog(maxLength);
             glGetProgramInfoLog(program, maxLength, &maxLength, infoLog.data());
-            HZ_CORE_ERROR("Shader linking failed ({0}):\n{1}", mFilePath, infoLog.data());
+            VI_CORE_ERROR("Shader linking failed ({0}):\n{1}", mFilePath, infoLog.data());
 
             glDeleteProgram(program);
 

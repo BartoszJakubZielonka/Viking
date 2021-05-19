@@ -5,14 +5,14 @@
 #include "ImGuiLayer.h"
 
 #include <imgui.h>
-#include <examples/imgui_impl_glfw.h>
-#include <examples/imgui_impl_opengl3.h>
+#include <backends/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
 
-#include "Hazel/Core/Application.h"
+#include "Viking/Core/Application.h"
 
 // TEMPORARY
 #include <GLFW/glfw3.h>
-#include <glad/glad.h>
+#include <glad/gl.h>
 
 #include "ImGuizmo.h"
 
@@ -49,7 +49,7 @@ namespace Viking {
         setDarkThemeColors();
 
         Application& app = Application::get();
-        GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
+        GLFWwindow* window = static_cast<GLFWwindow*>(app.getWindow().getNativeWindow());
 
         // Setup Platform/Renderer bindings
         ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -67,8 +67,8 @@ namespace Viking {
     void ImGuiLayer::onEvent(Event &event) {
         if (mBlockEvents) {
             ImGuiIO& io = ImGui::GetIO();
-            e.Handled |= e.IsInCategory(EventCategoryMouse) & io.WantCaptureMouse;
-            e.Handled |= e.IsInCategory(EventCategoryKeyboard) & io.WantCaptureKeyboard;
+            event.handled |= event.isInCategory(EventCategoryMouse) & io.WantCaptureMouse;
+            event.handled |= event.isInCategory(EventCategoryKeyboard) & io.WantCaptureKeyboard;
         }
     }
 
@@ -88,7 +88,7 @@ namespace Viking {
 
         ImGuiIO& io = ImGui::GetIO();
         Application& app = Application::get();
-        io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
+        io.DisplaySize = ImVec2((float)app.getWindow().getWidth(), (float)app.getWindow().getHeight());
 
         // Rendering
         ImGui::Render();

@@ -16,7 +16,7 @@ namespace Viking {
                 VI_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");
                 return nullptr;
             case RendererAPI::API::OpenGL:
-                return CreateRef<OpenGLFramebuffer>(spec);
+                return createRef<OpenGLFramebuffer>(spec);
         }
 
         VI_CORE_ASSERT(false, "Unknown RendererAPI!");

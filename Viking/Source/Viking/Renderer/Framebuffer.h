@@ -24,7 +24,7 @@ namespace Viking {
 
     struct FramebufferTextureSpecification {
         FramebufferTextureSpecification() = default;
-        explicit FramebufferTextureSpecification(FramebufferTextureFormat format): TextureFormat(format) {}
+        FramebufferTextureSpecification(FramebufferTextureFormat format): TextureFormat(format) {}
 
         FramebufferTextureFormat TextureFormat = FramebufferTextureFormat::None;
         // TODO: filtering/wrap
@@ -53,9 +53,9 @@ namespace Viking {
         virtual void unbind() = 0;
 
         virtual void resize(uint32_t width, uint32_t height) = 0;
-        virtual void readPixel(uint32_t attachmentIndex, int x, int y) const = 0;
+        [[nodiscard]] virtual int readPixel(uint32_t attachmentIndex, int x, int y) const = 0;
 
-        virtual void clearAttachment(uint32_t index = 0) const = 0;
+        virtual void clearAttachment(uint32_t index, int value) const = 0;
 
         [[nodiscard]] virtual uint32_t getColorAttachmentRendererId(uint32_t index = 0) const = 0;
 

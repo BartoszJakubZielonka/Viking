@@ -1,7 +1,7 @@
 //
 // Created by batzi on 15.05.2021.
 //
-
+#include "vipch.h"
 #include "Log.h"
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/sinks/basic_file_sink.h>

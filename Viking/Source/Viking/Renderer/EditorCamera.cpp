@@ -26,11 +26,11 @@ namespace Viking {
             mInitialMousePosition = mouse;
 
             if (Input::isMouseButtonPressed(Mouse::ButtonMiddle))
-                MousePan(delta);
+                mousePan(delta);
             else if (Input::isMouseButtonPressed(Mouse::ButtonLeft))
-                MouseRotate(delta);
+                mouseRotate(delta);
             else if (Input::isMouseButtonPressed(Mouse::ButtonRight))
-                MouseZoom(delta.y);
+                mouseZoom(delta.y);
         }
 
         updateView();
@@ -38,7 +38,7 @@ namespace Viking {
 
     void EditorCamera::onEvent(Event &e) {
         EventDispatcher dispatcher(e);
-        dispatcher.dispatch<MouseScrolledEvent>(HZ_BIND_EVENT_FN(EditorCamera::onMouseScroll));
+        dispatcher.dispatch<MouseScrolledEvent>(VI_BIND_EVENT_FN(EditorCamera::onMouseScroll));
     }
 
     glm::vec3 EditorCamera::getUpDirection() const

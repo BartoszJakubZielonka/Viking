@@ -24,20 +24,20 @@ namespace Viking {
     }
 
     void Renderer::beginScene(OrthographicCamera &camera) {
-        sSceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
+        sSceneData->ViewProjectionMatrix = camera.getViewProjectionMatrix();
     }
 
     void Renderer::endScene() {
 
     }
 
-    void Renderer::Submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform)
+    void Renderer::submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform)
     {
         shader->bind();
         shader->setMat4("u_ViewProjection", sSceneData->ViewProjectionMatrix);
         shader->setMat4("u_Transform", transform);
 
-        vertexArray->Bind();
-        RenderCommand::DrawIndexed(vertexArray);
+        vertexArray->bind();
+        RenderCommand::drawIndexed(vertexArray);
     }
 }

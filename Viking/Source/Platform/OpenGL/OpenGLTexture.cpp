@@ -79,7 +79,7 @@ namespace Viking {
         VI_PROFILE_FUNCTION();
 
         uint32_t bpp = mDataFormat == GL_RGBA ? 4 : 3;
-        VI_CORE_ASSERT(size == m_Width * m_Height * bpp, "Data must be entire texture!");
+        VI_CORE_ASSERT(size == mWidth * mHeight * bpp, "Data must be entire texture!");
         glTextureSubImage2D(mRendererID, 0, 0, 0, mWidth, mHeight, mDataFormat, GL_UNSIGNED_BYTE, data);
     }
 

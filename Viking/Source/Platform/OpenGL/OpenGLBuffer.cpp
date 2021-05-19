@@ -4,7 +4,7 @@
 #include "vipch.h"
 #include "Platform/OpenGL/OpenGLBuffer.h"
 
-#include <glad/glad.h>
+#include <glad/gl.h>
 
 namespace Viking {
 

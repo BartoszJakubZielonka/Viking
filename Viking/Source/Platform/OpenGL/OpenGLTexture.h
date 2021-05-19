@@ -7,7 +7,7 @@
 
 #include "Viking/Renderer/Texture.h"
 
-#include <glad/glad.h>
+#include <glad/gl.h>
 
 namespace Viking {
     class OpenGLTexture2D final: public Texture2D {
@@ -20,11 +20,11 @@ namespace Viking {
             return mWidth;
         }
 
-        virtual uint32_t getHeight() const override {
+        uint32_t getHeight() const override {
             return mHeight;
         }
 
-        virtual uint32_t getRendererID() const override {
+        uint32_t getRendererID() const override {
             return mRendererID;
         }
 

@@ -62,13 +62,13 @@ namespace Viking {
         VI_PROFILE_FUNCTION();
 
         EventDispatcher dispatcher(e);
-        dispatcher.dispatch<MouseScrolledEvent>(HZ_BIND_EVENT_FN(OrthographicCameraController::onMouseScrolled));
-        dispatcher.dispatch<WindowResizeEvent>(HZ_BIND_EVENT_FN(OrthographicCameraController::onWindowResized));
+        dispatcher.dispatch<MouseScrolledEvent>(VI_BIND_EVENT_FN(OrthographicCameraController::onMouseScrolled));
+        dispatcher.dispatch<WindowResizeEvent>(VI_BIND_EVENT_FN(OrthographicCameraController::onWindowResized));
     }
 
     void OrthographicCameraController::onResize(float width, float height) {
         mAspectRatio = width / height;
-        mCamera.SetProjection(-mAspectRatio * mZoomLevel, mAspectRatio * mZoomLevel, -mZoomLevel, mZoomLevel);
+        mCamera.setProjection(-mAspectRatio * mZoomLevel, mAspectRatio * mZoomLevel, -mZoomLevel, mZoomLevel);
     }
 
     bool OrthographicCameraController::onMouseScrolled(MouseScrolledEvent &e) {
@@ -76,7 +76,7 @@ namespace Viking {
 
         mZoomLevel -= e.getYOffset() * 0.25f;
         mZoomLevel = std::max(mZoomLevel, 0.25f);
-        mCamera.SetProjection(-mAspectRatio * mZoomLevel, mAspectRatio * mZoomLevel, -mZoomLevel, mZoomLevel);
+        mCamera.setProjection(-mAspectRatio * mZoomLevel, mAspectRatio * mZoomLevel, -mZoomLevel, mZoomLevel);
         return false;
     }
 

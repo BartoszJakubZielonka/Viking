@@ -4,7 +4,7 @@
 #include "vipch.h"
 #include "OpenGLUniformBuffer.h"
 
-#include <glad/glad.h>
+#include <glad/gl.h>
 
 namespace Viking {
     OpenGLUniformBuffer::OpenGLUniformBuffer(uint32_t size, uint32_t binding)

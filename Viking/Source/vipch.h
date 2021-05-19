@@ -33,7 +33,7 @@
 
 #include "Viking/Debug/Instrumentor.h"
 
-#ifdef HZ_PLATFORM_WINDOWS
+#ifdef VI_PLATFORM_WINDOWS
 #include <Windows.h>
 #endif
 

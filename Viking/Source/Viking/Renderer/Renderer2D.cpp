@@ -62,9 +62,9 @@ namespace Viking {
 
         sData.QuadVertexArray = VertexArray::create();
 
-        sData.QuadVertexBuffer = VertexBuffer::Create(sData.MaxVertices * sizeof(QuadVertex));
+        sData.QuadVertexBuffer = VertexBuffer::create(sData.MaxVertices * sizeof(QuadVertex));
 
-        sData.QuadVertexBuffer->SetLayout({
+        sData.QuadVertexBuffer->setLayout({
             { ShaderDataType::Float3, "a_Position"     },
             { ShaderDataType::Float4, "a_Color"        },
             { ShaderDataType::Float2, "a_TexCoord"     },
@@ -108,7 +108,7 @@ namespace Viking {
         sData.TextureShader = Shader::create("assets/shaders/Texture.glsl");
 
         // Set first texture slot to 0
-        sData.TextureSlots[0] = s_Data.WhiteTexture;
+        sData.TextureSlots[0] = sData.WhiteTexture;
 
         sData.QuadVertexPositions[0] = { -0.5f, -0.5f, 0.0f, 1.0f };
         sData.QuadVertexPositions[1] = {  0.5f, -0.5f, 0.0f, 1.0f };
@@ -127,7 +127,7 @@ namespace Viking {
     {
         VI_PROFILE_FUNCTION();
 
-        sData.CameraBuffer.ViewProjection = camera.GetProjection() * glm::inverse(transform);
+        sData.CameraBuffer.ViewProjection = camera.getProjection() * glm::inverse(transform);
         sData.CameraUniformBuffer->setData(&sData.CameraBuffer, sizeof(Renderer2DData::CameraData));
 
         startBatch();
@@ -137,7 +137,7 @@ namespace Viking {
     {
         VI_PROFILE_FUNCTION();
 
-        sData.CameraBuffer.ViewProjection = camera.GetViewProjection();
+        sData.CameraBuffer.ViewProjection = camera.getViewProjection();
         sData.CameraUniformBuffer->setData(&sData.CameraBuffer, sizeof(Renderer2DData::CameraData));
 
         startBatch();
@@ -164,14 +164,14 @@ namespace Viking {
             return; // Nothing to draw
 
         uint32_t dataSize = (uint32_t)((uint8_t*)sData.QuadVertexBufferPtr - (uint8_t*)sData.QuadVertexBufferBase);
-        sData.QuadVertexBuffer->SetData(sData.QuadVertexBufferBase, dataSize);
+        sData.QuadVertexBuffer->setData(sData.QuadVertexBufferBase, dataSize);
 
         // Bind textures
         for (uint32_t i = 0; i < sData.TextureSlotIndex; i++)
             sData.TextureSlots[i]->bind(i);
 
         sData.TextureShader->bind();
-        RenderCommand::DrawIndexed(sData.QuadVertexArray, sData.QuadIndexCount);
+        RenderCommand::drawIndexed(sData.QuadVertexArray, sData.QuadIndexCount);
         sData.Stats.DrawCalls++;
     }
 
