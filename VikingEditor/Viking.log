@@ -1,0 +1,23 @@
+[19:20:56] [info] Viking: Creating window Viking Editor (1600, 900)
+[19:20:56] [info] Viking: OpenGL Info:
+[19:20:56] [info] Viking:   Vendor: ATI Technologies Inc.
+[19:20:56] [info] Viking:   Renderer: AMD Radeon(TM) Graphics
+[19:20:56] [info] Viking:   Version: 4.6.13596 Compatibility Profile/Debug Context 20.10.28.05 27.20.11028.5001
+[19:21:00] [trace] Viking: OpenGLShader::Reflect - GL_VERTEX_SHADER assets/shaders/Texture.glsl
+[19:21:00] [trace] Viking:     1 uniform buffers
+[19:21:00] [trace] Viking:     0 resources
+[19:21:00] [trace] Viking: Uniform buffers:
+[19:21:00] [trace] Viking:   _47_49
+[19:21:00] [trace] Viking:     Size = 64
+[19:21:00] [trace] Viking:     Binding = 0
+[19:21:00] [trace] Viking:     Members = 1
+[19:21:00] [trace] Viking: OpenGLShader::Reflect - GL_FRAGMENT_SHADER assets/shaders/Texture.glsl
+[19:21:00] [trace] Viking:     0 uniform buffers
+[19:21:00] [trace] Viking:     1 resources
+[19:21:00] [trace] Viking: Uniform buffers:
+[19:21:02] [warning] Viking: Shader creation took 6265.4346 ms
+[19:22:25] [trace] Viking: Deserializing scene 'Untitled'
+[19:22:25] [trace] Viking: Deserialized entity with ID = 12837192831273, name = Top
+[19:22:25] [trace] Viking: Deserialized entity with ID = 12837192831273, name = Camera
+[19:22:25] [trace] Viking: Deserialized entity with ID = 12837192831273, name = Right
+[19:22:25] [trace] Viking: Deserialized entity with ID = 12837192831273, name = Left
