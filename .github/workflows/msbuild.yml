@@ -12,14 +12,19 @@ env:
   BUILD_CONFIGURATION: Release
 
 jobs:
+  preparation:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Install Vulkan SDK
+      uses: humbletim/setup-vulkan-sdk@v1.0.1
+      with:
+        vulkan-version: 1.2.170.0
   build:
     runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v2
-    
-    - name: Setup Vulkan SDK
-      uses: humbletim/setup-vulkan-sdk@v1.0.1
 
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
