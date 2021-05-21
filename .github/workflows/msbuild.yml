@@ -34,7 +34,8 @@ jobs:
         
     - name: Execute setup script
       shell: cmd
-      run: .\Scripts\Setup.bat         
+      working-directory: .\Scripts
+      run: .\Setup.bat         
 
     - name: Restore NuGet packages
       working-directory: ${{env.GITHUB_WORKSPACE}}
