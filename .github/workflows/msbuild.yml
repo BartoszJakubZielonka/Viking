@@ -12,14 +12,7 @@ env:
   BUILD_CONFIGURATION: Release
 
 jobs:
-  preparation:
-    runs-on: windows-latest
-    
-    steps:
-    - name: Install Vulkan SDK
-      uses: humbletim/setup-vulkan-sdk@v1.0.1
-      with:
-        vulkan-version: 1.2.170.0
+  
   build:
     runs-on: windows-latest
 
@@ -28,6 +21,20 @@ jobs:
 
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
+      
+    - name: Install Vulkan SDK
+      uses: humbletim/setup-vulkan-sdk@v1.0.1
+      with:
+        vulkan-version: 1.2.170.0
+        
+    - name: setup python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8 #install the python needed
+        
+    - name: Execute setup script
+      shell: cmd
+      run: .\Scripts\Setup.bat         
 
     - name: Restore NuGet packages
       working-directory: ${{env.GITHUB_WORKSPACE}}
