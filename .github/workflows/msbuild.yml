@@ -34,14 +34,6 @@ jobs:
         architecture: 'x64'
         
     - uses: actions/checkout@v2  
-    - name: Python Linter
-      uses: sunnysid3up/python-linter@master
-      with:
-        source: "Scripts"
-        mypy-options: "--ignore-missing-imports --show-error-codes"
-        pylint-options: "--rcfile=setup.cfg"
-        isort-options: "-w 100"
-        django: true
         
     - name: Execute setup script
       shell: cmd
