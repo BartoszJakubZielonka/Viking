@@ -36,3 +36,5 @@ bin/
 *.sln
 *.vcxproj*
 __pycache__/
+
+*.log
