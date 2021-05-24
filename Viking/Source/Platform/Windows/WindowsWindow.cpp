@@ -15,6 +15,7 @@
 #include "Platform/OpenGL/OpenGLContext.h"
 
 namespace Viking {
+    float Window::sHighDPIScaleFactor{ 1.0f };
     static uint8_t sGLFWWindowCount{0};
 
     static void GLFWErrorCallback(int error, const char* description)
@@ -91,6 +92,15 @@ namespace Viking {
 
         {
             VI_PROFILE_SCOPE("glfwCreateWindow");
+            GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+            float xScale, yScale;
+            glfwGetMonitorContentScale(monitor, &xScale, &yScale);
+            if (xScale > 1.0f || yScale > 1.0f)
+            {
+                sHighDPIScaleFactor = yScale;
+                glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
+            }
+
 #if defined(VI_DEBUG)
             if (Renderer::getAPI() == RendererAPI::API::OpenGL)
 				glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);

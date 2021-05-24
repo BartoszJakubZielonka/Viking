@@ -33,13 +33,16 @@ namespace Viking {
         //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
         //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 
-        io.Fonts->AddFontFromFileTTF("assets/fonts/opensans/OpenSans-Bold.ttf", 18.0f);
-        io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/opensans/OpenSans-Regular.ttf", 18.0f);
+        //io.Fonts->AddFontFromFileTTF("assets/fonts/opensans/OpenSans-Bold.ttf", 18.0f);
+        io.Fonts->AddFontFromFileTTF("assets/fonts/opensans/OpenSans-Bold.ttf", Window::sHighDPIScaleFactor * 18.0f);
+        //io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/opensans/OpenSans-Regular.ttf", 18.0f);
+        io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/opensans/OpenSans-Regular.ttf", Window::sHighDPIScaleFactor * 18.0f);
 
         // Setup Dear ImGui style
         ImGui::StyleColorsDark();
 
         ImGuiStyle& style = ImGui::GetStyle();
+        //style.ScaleAllSizes(Window::sHighDPIScaleFactor);
         if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
         {
             style.WindowRounding = 0.0f;

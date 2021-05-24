@@ -38,6 +38,8 @@ namespace Viking {
         [[nodiscard]] virtual void* getNativeWindow() const = 0;
 
         static Scope<Window> create(const WindowProps props = WindowProps());
+
+        static float sHighDPIScaleFactor;
     };
 }
 
