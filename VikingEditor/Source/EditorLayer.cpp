@@ -28,7 +28,7 @@ void EditorLayer::onAttach()
     fbSpec.Height = 720;
     mFramebuffer = Viking::Framebuffer::create(fbSpec);
 
-    mActiveScene = Viking::createRef<Viking::Scene>();
+    mActiveScene = Viking::createRef<Viking::Scene>("Unlited");
 
     auto commandLineArgs = Viking::Application::get().getCommandLineArgs();
     if (commandLineArgs.Count > 1)
@@ -348,7 +348,7 @@ bool EditorLayer::onMouseButtonPressed(Viking::MouseButtonPressedEvent& e)
 
 void EditorLayer::newScene()
 {
-    mActiveScene = Viking::createRef<Viking::Scene>();
+    mActiveScene = Viking::createRef<Viking::Scene>("Unlited");
     mActiveScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
     mSceneHierarchyPanel.setContext(mActiveScene);
 }
@@ -358,7 +358,7 @@ void EditorLayer::openScene()
     std::string filepath = Viking::FileDialogs::openFile("Viking Scene (*.viking)\0*.viking\0");
     if (!filepath.empty())
     {
-        mActiveScene = Viking::createRef<Viking::Scene>();
+        mActiveScene = Viking::createRef<Viking::Scene>("Unlited");
         mActiveScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
         mSceneHierarchyPanel.setContext(mActiveScene);
 

@@ -17,7 +17,7 @@ namespace Viking {
 
     class Scene {
     public:
-        Scene() = default;
+        Scene(const std::string& sceneName ): mSceneName(sceneName) {}
         ~Scene() = default;
 
         Entity createEntity(const std::string& name = std::string());
@@ -32,6 +32,8 @@ namespace Viking {
     private:
         template<typename T>
         void onComponentAdded(Entity entity, T& component);
+
+        std::string mSceneName;
 
         entt::registry mRegistry;
         uint32_t mViewportWidth = 0, mViewportHeight = 0;

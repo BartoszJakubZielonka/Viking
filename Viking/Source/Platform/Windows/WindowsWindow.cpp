@@ -85,7 +85,7 @@ namespace Viking {
         if (sGLFWWindowCount == 0)
         {
             VI_PROFILE_SCOPE("glfwInit");
-            int success = glfwInit();
+            const int success = glfwInit();
             VI_CORE_ASSERT(success, "Could not initialize GLFW!");
             glfwSetErrorCallback(GLFWErrorCallback);
         }
@@ -105,7 +105,7 @@ namespace Viking {
             if (Renderer::getAPI() == RendererAPI::API::OpenGL)
 				glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 #endif
-            mWindow = glfwCreateWindow((int)props.Width, (int)props.Height, mData.Title.c_str(), nullptr, nullptr);
+            mWindow = glfwCreateWindow(static_cast<int>(props.Width), static_cast<int>(props.Height), mData.Title.c_str(), nullptr, nullptr);
             ++sGLFWWindowCount;
         }
 
@@ -118,7 +118,7 @@ namespace Viking {
         // Set GLFW callbacks
         glfwSetWindowSizeCallback(mWindow, [](GLFWwindow* window, int width, int height)
         {
-            WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+            WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
             data.Width = width;
             data.Height = height;
 
@@ -128,14 +128,14 @@ namespace Viking {
 
         glfwSetWindowCloseCallback(mWindow, [](GLFWwindow* window)
         {
-            WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+            WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
             WindowCloseEvent event;
             data.EventCallback(event);
         });
 
         glfwSetKeyCallback(mWindow, [](GLFWwindow* window, int key, int scancode, int action, int mods)
         {
-            WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+            WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
             switch (action)
             {
@@ -162,7 +162,7 @@ namespace Viking {
 
         glfwSetCharCallback(mWindow, [](GLFWwindow* window, unsigned int keycode)
         {
-            WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+            WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
             KeyTypedEvent event(keycode);
             data.EventCallback(event);
@@ -170,7 +170,7 @@ namespace Viking {
 
         glfwSetMouseButtonCallback(mWindow, [](GLFWwindow* window, int button, int action, int mods)
         {
-            WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+            WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
             switch (action)
             {
@@ -191,22 +191,23 @@ namespace Viking {
 
         glfwSetScrollCallback(mWindow, [](GLFWwindow* window, double xOffset, double yOffset)
         {
-            WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+            WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
-            MouseScrolledEvent event((float)xOffset, (float)yOffset);
+            MouseScrolledEvent event(static_cast<float>(xOffset), static_cast<float>(yOffset));
             data.EventCallback(event);
         });
 
         glfwSetCursorPosCallback(mWindow, [](GLFWwindow* window, double xPos, double yPos)
         {
-            WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+            WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
-            MouseMovedEvent event((float)xPos, (float)yPos);
+            MouseMovedEvent event(static_cast<float>(xPos), static_cast<float>(yPos));
             data.EventCallback(event);
         });
     }
 
-    void WindowsWindow::shutdown() {
+    void WindowsWindow::shutdown() const
+    {
         VI_PROFILE_FUNCTION();
 
         glfwDestroyWindow(mWindow);
