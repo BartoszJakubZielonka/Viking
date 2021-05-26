@@ -31,6 +31,11 @@ project "VikingEditor"
 	filter "system:windows"
 		systemversion "latest"
 
+		postbuildcommands
+		{
+			"{COPY} %{LibraryDir.VulkanSDK_DLL} %{wks.location}/bin/" .. outputdir .. "/%{prj.name}"
+		}
+
 	filter "configurations:Debug"
 		defines "VI_DEBUG"
 		runtime "Debug"

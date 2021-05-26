@@ -37,4 +37,5 @@ bin/
 *.vcxproj*
 __pycache__/
 
+!Viking.log
 *.log
