@@ -208,9 +208,7 @@ void EditorLayer::onImGuiRender()
     uint64_t textureID = mFramebuffer->getColorAttachmentRendererId();
     ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ mViewportSize.x, mViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
-    // Gizmos
-    Viking::Entity selectedEntity = mSceneHierarchyPanel.getSelectedEntity();
-    if (selectedEntity && mGizmoType != -1)
+    if (Viking::Entity selectedEntity = mSceneHierarchyPanel.getSelectedEntity(); selectedEntity && mGizmoType != -1)
     {
         ImGuizmo::SetOrthographic(false);
         ImGuizmo::SetDrawlist();
@@ -243,7 +241,7 @@ void EditorLayer::onImGuiRender()
         float snapValues[3] = { snapValue, snapValue, snapValue };
 
         ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
-            (ImGuizmo::OPERATION)mGizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),
+            static_cast<ImGuizmo::OPERATION>(mGizmoType), ImGuizmo::LOCAL, glm::value_ptr(transform),
             nullptr, snap ? snapValues : nullptr);
 
         if (ImGuizmo::IsUsing())
@@ -281,8 +279,8 @@ bool EditorLayer::onKeyPressed(Viking::KeyPressedEvent& e)
     if (e.getRepeatCount() > 0)
         return false;
 
-    bool control = Viking::Input::isKeyPressed(Viking::Key::LeftControl) || Viking::Input::isKeyPressed(Viking::Key::RightControl);
-    bool shift = Viking::Input::isKeyPressed(Viking::Key::LeftShift) || Viking::Input::isKeyPressed(Viking::Key::RightShift);
+    const auto control = Viking::Input::isKeyPressed(Viking::Key::LeftControl) || Viking::Input::isKeyPressed(Viking::Key::RightControl);
+    const auto shift = Viking::Input::isKeyPressed(Viking::Key::LeftShift) || Viking::Input::isKeyPressed(Viking::Key::RightShift);
 
     switch (e.getKeyCode())
     {
@@ -334,6 +332,8 @@ bool EditorLayer::onKeyPressed(Viking::KeyPressedEvent& e)
         break;
     }
     }
+
+    return false;
 }
 
 bool EditorLayer::onMouseButtonPressed(Viking::MouseButtonPressedEvent& e)
@@ -348,18 +348,17 @@ bool EditorLayer::onMouseButtonPressed(Viking::MouseButtonPressedEvent& e)
 
 void EditorLayer::newScene()
 {
-    mActiveScene = Viking::createRef<Viking::Scene>("Unlited");
-    mActiveScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
+    mActiveScene = Viking::createRef<Viking::Scene>("untitled");
+    mActiveScene->onViewportResize(static_cast<uint32_t>(mViewportSize.x), static_cast<uint32_t>(mViewportSize.y));
     mSceneHierarchyPanel.setContext(mActiveScene);
 }
 
 void EditorLayer::openScene()
 {
-    std::string filepath = Viking::FileDialogs::openFile("Viking Scene (*.viking)\0*.viking\0");
-    if (!filepath.empty())
+    if (const std::string filepath = Viking::FileDialogs::openFile("Viking Scene (*.viking)\0*.viking\0"); !filepath.empty())
     {
-        mActiveScene = Viking::createRef<Viking::Scene>("Unlited");
-        mActiveScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
+        mActiveScene = Viking::createRef<Viking::Scene>("Untitled");
+        mActiveScene->onViewportResize(static_cast<uint32_t>(mViewportSize.x), static_cast<uint32_t>(mViewportSize.y));
         mSceneHierarchyPanel.setContext(mActiveScene);
 
         Viking::SceneSerializer serializer(mActiveScene);
@@ -367,10 +366,9 @@ void EditorLayer::openScene()
     }
 }
 
-void EditorLayer::saveSceneAs()
+void EditorLayer::saveSceneAs() const
 {
-    std::string filepath = Viking::FileDialogs::saveFile("Viking Scene (*.viking)\0*.viking\0");
-    if (!filepath.empty())
+    if (const std::string filepath = Viking::FileDialogs::saveFile("Viking Scene (*.viking)\0*.viking\0"); !filepath.empty())
     {
         Viking::SceneSerializer serializer(mActiveScene);
         serializer.serialize(filepath);

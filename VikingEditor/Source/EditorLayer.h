@@ -23,7 +23,7 @@ private:
 
     void newScene();
     void openScene();
-    void saveSceneAs();
+    void saveSceneAs() const;
 
     Viking::OrthographicCameraController mCameraController;
 
