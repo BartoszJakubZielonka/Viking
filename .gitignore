@@ -33,6 +33,7 @@
 
 .vs/
 bin/
+!Vendor/premake/bin/
 *.sln
 *.vcxproj*
 __pycache__/
