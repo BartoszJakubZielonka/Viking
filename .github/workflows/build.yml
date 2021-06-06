@@ -69,7 +69,7 @@ jobs:
       with:
         languages: ${{ matrix.language }}
     
-    - if matrix.language == 'cpp':
+    if matrix.language == 'cpp':
       - name: Add MSBuild to PATH
         uses: microsoft/setup-msbuild@v1.0.2
       
