@@ -1,54 +1,59 @@
-//
-// Created by batzi on 16.05.2021.
-//
-
 #include "vipch.h"
 #include "Viking/Renderer/Buffer.h"
 
-#include "Viking/Renderer/Renderer.h"
-
-#include "Platform/OpenGL/OpenGLBuffer.h"
-
-namespace Viking {
-    Ref<VertexBuffer> VertexBuffer::create(uint32_t size) {
-        switch (Renderer::getAPI())
-        {
-            case RendererAPI::API::None:
-                VI_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");
-                return nullptr;
-            case RendererAPI::API::OpenGL:
-                return createRef<OpenGLVertexBuffer>(size);
-        }
-
-        VI_CORE_ASSERT(false, "Unknown RendererAPI!");
-        return nullptr;
+namespace Viking
+{
+    Buffer::Buffer() : mData(nullptr), mSize(0)
+    {
     }
 
-    Ref<VertexBuffer> VertexBuffer::create(float *vertices, uint32_t size) {
-        switch (Renderer::getAPI())
-        {
-            case RendererAPI::API::None:
-                VI_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");
-                return nullptr;
-            case RendererAPI::API::OpenGL:
-                return createRef<OpenGLVertexBuffer>(vertices, size);
-        }
-
-        VI_CORE_ASSERT(false, "Unknown RendererAPI!");
-        return nullptr;
+    Buffer::Buffer(byte* data, uint32_t size):mData(data), mSize(size)
+    {
     }
 
-    Ref<IndexBuffer> IndexBuffer::create(uint32_t *indices, uint32_t count) {
-        switch (Renderer::getAPI())
-        {
-            case RendererAPI::API::None:
-                VI_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");
-                return nullptr;
-            case RendererAPI::API::OpenGL:
-                return createRef<OpenGLIndexBuffer>(indices, count);
-        }
+    Buffer::operator bool() const
+    {
+        return mData;
+    }
 
-        VI_CORE_ASSERT(false, "Unknown RendererAPI!");
-        return nullptr;
+    byte& Buffer::operator[](uint32_t index)
+    {
+        return mData[index];
+    }
+
+    byte Buffer::operator[](uint32_t index) const
+    {
+        return mData[index];
+    }
+
+    Buffer Buffer::copy(void* data, size_t size)
+    {
+        Buffer buffer;
+        buffer.allocate(size);
+        memcpy(buffer.mData, data, size);
+        return buffer;
+    }
+
+    void Buffer::allocate(const size_t size)
+    {
+        delete[] mData;
+        mData = nullptr;
+        mSize = 0;
+
+        mData = new uint8_t[size];
+        mSize = size;
+    }
+
+    void Buffer::zeroize() const
+    {
+        if (mData)
+            memset(mData, 0, mSize);
+    }
+
+    void Buffer::reset()
+    {
+        delete[] mData;
+        mData = nullptr;
+        mSize = 0;
     }
 }

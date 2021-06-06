@@ -41,12 +41,42 @@ project "VikingEditor"
 		runtime "Debug"
 		symbols "on"
 
+		links
+		{
+			"../Viking/Vendor/assimp/bin/Debug/assimp-vc141-mtd.lib"
+		}
+
+		postbuildcommands
+		{
+			'{COPY} "../Viking/Vendor/assimp/bin/Debug/assimp-vc141-mtd.dll" "%{cfg.targetdir}"'
+		}
+
 	filter "configurations:Release"
 		defines "VI_RELEASE"
 		runtime "Release"
 		optimize "on"
 
+		links
+		{
+			"Viking/Vendor/assimp/bin/Release/assimp-vc141-mt.lib"
+		}
+
+		postbuildcommands
+		{
+			'{COPY} "../Viking/Vendor/assimp/bin/Release/assimp-vc141-mt.dll" "%{cfg.targetdir}"',
+		}
+
 	filter "configurations:Dist"
 		defines "VI_DIST"
 		runtime "Release"
 		optimize "on"
+
+		links
+		{
+			"Viking/Vendor/assimp/bin/Release/assimp-vc141-mt.lib"
+		}
+
+		postbuildcommands
+		{
+			'{COPY} "../Viking/Vendor/assimp/bin/Release/assimp-vc141-mt.dll" "%{cfg.targetdir}"',
+		}

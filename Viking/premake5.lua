@@ -33,6 +33,7 @@ project "Viking"
 	{
 		"Source",
 		"Vendor/spdlog/include",
+		"%{IncludeDir.Assimp}",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",

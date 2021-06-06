@@ -1,7 +1,3 @@
-//
-// Created by batzi on 15.05.2021.
-//
-
 #ifndef VIKING_BASE_H
 #define VIKING_BASE_H
 
@@ -47,6 +43,7 @@ namespace Viking {
         return std::make_shared<T>(std::forward<Args>(args)...);
     }
 
+    using byte = uint8_t;
 }
 
 #include "Viking/Core/Log.h"

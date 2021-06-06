@@ -22,7 +22,7 @@ namespace Viking {
             case ShaderDataType::Bool:     return GL_BOOL;
         }
 
-        VI_CORE_ASSERT(false, "Unknown ShaderDataType!");
+        VI_CORE_ASSERT(false, "Unknown ShaderDataType!")
         return 0;
     }
 
@@ -54,7 +54,7 @@ namespace Viking {
     void OpenGLVertexArray::addVertexBuffer(const Ref<VertexBuffer> &vertexBuffer) {
         VI_PROFILE_FUNCTION();
 
-        VI_CORE_ASSERT(vertexBuffer->getLayout().getElements().size(), "Vertex Buffer has no layout!");
+        VI_CORE_ASSERT(vertexBuffer->getLayout().getElements().size(), "Vertex Buffer has no layout!")
 
         glBindVertexArray(mRendererID);
         vertexBuffer->bind();
@@ -62,7 +62,7 @@ namespace Viking {
         const auto& layout = vertexBuffer->getLayout();
         for (const auto& element : layout)
         {
-            switch (element.Type)
+            switch (element.mType)
             {
                 case ShaderDataType::Float:
                 case ShaderDataType::Float2:
@@ -70,7 +70,7 @@ namespace Viking {
                 case ShaderDataType::Float4:
                 {
                     glEnableVertexAttribArray(mVertexBufferIndex);
-                    glVertexAttribPointer(mVertexBufferIndex, element.getComponentCount(), ShaderDataTypeToOpenGLBaseType(element.Type), element.Normalized ? GL_TRUE : GL_FALSE, layout.getStride(), (const void*)element.Offset);
+                    glVertexAttribPointer(mVertexBufferIndex, element.getComponentCount(), ShaderDataTypeToOpenGLBaseType(element.mType), element.mNormalized ? GL_TRUE : GL_FALSE, layout.getStride(), (const void*)element.mOffset);
                     mVertexBufferIndex++;
                     break;
                 }
@@ -81,7 +81,7 @@ namespace Viking {
                 case ShaderDataType::Bool:
                 {
                     glEnableVertexAttribArray(mVertexBufferIndex);
-                    glVertexAttribIPointer(mVertexBufferIndex, element.getComponentCount(), ShaderDataTypeToOpenGLBaseType(element.Type), layout.getStride(), (const void*)element.Offset);
+                    glVertexAttribIPointer(mVertexBufferIndex, element.getComponentCount(), ShaderDataTypeToOpenGLBaseType(element.mType), layout.getStride(), (const void*)element.mOffset);
                     mVertexBufferIndex++;
                     break;
                 }
@@ -92,7 +92,7 @@ namespace Viking {
                     for (uint8_t i = 0; i < count; i++)
                     {
                         glEnableVertexAttribArray(mVertexBufferIndex);
-                        glVertexAttribPointer(mVertexBufferIndex, count, ShaderDataTypeToOpenGLBaseType(element.Type), element.Normalized ? GL_TRUE : GL_FALSE, layout.getStride(), (const void*)(element.Offset + sizeof(float) * count * i));
+                        glVertexAttribPointer(mVertexBufferIndex, count, ShaderDataTypeToOpenGLBaseType(element.mType), element.mNormalized ? GL_TRUE : GL_FALSE, layout.getStride(), (const void*)(element.mOffset + sizeof(float) * count * i));
                         glVertexAttribDivisor(mVertexBufferIndex, 1);
                         mVertexBufferIndex++;
                     }

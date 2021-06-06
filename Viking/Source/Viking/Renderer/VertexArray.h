@@ -6,7 +6,8 @@
 #define VIKING_VERTEXARRAY_H
 
 #include <memory>
-#include "Viking/Renderer/Buffer.h"
+#include "Viking/Renderer/IndexBuffer.h"
+#include "Viking/Renderer/VertexBuffer.h"
 
 namespace Viking {
     class VertexArray {
