@@ -139,6 +139,11 @@ namespace Viking {
     }
 
     template<>
+    void Scene::onComponentAdded<MeshRendererComponent>(Entity entity, MeshRendererComponent& component)
+    {
+    }
+
+    template<>
     void Scene::onComponentAdded<TagComponent>(Entity entity, TagComponent& component)
     {
     }

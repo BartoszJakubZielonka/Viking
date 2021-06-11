@@ -13,6 +13,7 @@
 
 #include "SceneCamera.h"
 #include "ScriptableEntity.h"
+#include "Viking/Renderer/Mesh.h"
 
 namespace Viking {
     struct TagComponent {
@@ -45,11 +46,23 @@ namespace Viking {
 
     struct SpriteRendererComponent
     {
-        glm::vec4 Color{ 1.0f, 1.0f, 1.0f, 1.0f };
+        glm::vec4 color{ 1.0f, 1.0f, 1.0f, 1.0f };
 
         SpriteRendererComponent() = default;
         SpriteRendererComponent(const SpriteRendererComponent&) = default;
-        SpriteRendererComponent(const glm::vec4& color): Color(color) {}
+        SpriteRendererComponent(const glm::vec4& color): color(color) {}
+    };
+
+    struct MeshRendererComponent
+    {
+        Ref<Mesh> mesh;
+
+        MeshRendererComponent() = default;
+        MeshRendererComponent(const MeshRendererComponent&) = default;
+        MeshRendererComponent(const std::string& path)
+        {
+            mesh = createRef<Mesh>(path);
+        }
     };
 
     struct CameraComponent

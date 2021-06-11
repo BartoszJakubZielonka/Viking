@@ -20,7 +20,8 @@ project "VikingEditor"
 		"%{wks.location}/Viking/Vendor",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.entt}",
-		"%{IncludeDir.ImGuizmo}"
+		"%{IncludeDir.ImGuizmo}",
+		"%{IncludeDir.Assimp}"
 	}
 
 	links

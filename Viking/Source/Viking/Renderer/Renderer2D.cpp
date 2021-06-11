@@ -183,7 +183,7 @@ namespace Viking {
 
     void Renderer2D::drawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID)
     {
-        drawQuad(transform, src.Color, entityID);
+        drawQuad(transform, src.color, entityID);
     }
 
     void Renderer2D::resetStats()

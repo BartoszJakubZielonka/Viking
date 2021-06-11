@@ -13,8 +13,8 @@ os.chdir('../')
 
 Premake.InstallPremake()
 
-# if (not Vulkan.CheckVulkanSDK()):
-#     print("Vulkan SDK not installed.")
+if (not Vulkan.CheckVulkanSDK()):
+    print("Vulkan SDK not installed.")
     
 if (not Vulkan.CheckVulkanSDKDebugLibs()):
     print("Vulkan SDK debug libs not found.")

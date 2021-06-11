@@ -141,7 +141,7 @@ namespace Viking {
             out << YAML::BeginMap; // SpriteRendererComponent
 
             auto& spriteRendererComponent = entity.getComponent<SpriteRendererComponent>();
-            out << YAML::Key << "Color" << YAML::Value << spriteRendererComponent.Color;
+            out << YAML::Key << "Color" << YAML::Value << spriteRendererComponent.color;
 
             out << YAML::EndMap; // SpriteRendererComponent
         }
@@ -235,7 +235,7 @@ namespace Viking {
                 if (spriteRendererComponent)
                 {
                     auto& src = deserializedEntity.addComponent<SpriteRendererComponent>();
-                    src.Color = spriteRendererComponent["Color"].as<glm::vec4>();
+                    src.color = spriteRendererComponent["Color"].as<glm::vec4>();
                 }
             }
         }
