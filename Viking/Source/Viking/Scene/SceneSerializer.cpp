@@ -146,6 +146,17 @@ namespace Viking {
             out << YAML::EndMap; // SpriteRendererComponent
         }
 
+        if (entity.hasComponent<MeshRendererComponent>())
+        {
+            out << YAML::Key << "MeshRendererComponent";
+            out << YAML::BeginMap; // MeshRendererComponent
+
+            auto& meshRendererComponent = entity.getComponent<MeshRendererComponent>();
+            out << YAML::Key << "Path" << YAML::Value << meshRendererComponent.mesh->getFilePath();
+
+            out << YAML::EndMap; // MeshRendererComponent
+        }
+
         out << YAML::EndMap; // Entity
     }
 
@@ -236,6 +247,13 @@ namespace Viking {
                 {
                     auto& src = deserializedEntity.addComponent<SpriteRendererComponent>();
                     src.color = spriteRendererComponent["Color"].as<glm::vec4>();
+                }
+
+                auto meshRendererComponent = entity["MeshRendererComponent"];
+                if (meshRendererComponent)
+                {
+                    auto& src = deserializedEntity.addComponent<MeshRendererComponent>();
+                    src.mesh = createRef<Mesh>(meshRendererComponent["Path"].as<std::string>());
                 }
             }
         }

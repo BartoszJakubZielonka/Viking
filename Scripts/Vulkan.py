@@ -43,7 +43,8 @@ def CheckVulkanSDK():
     print(f"Correct Vulkan SDK located at {VULKAN_SDK}")
     return True
 
-VulkanSDKDebugLibsURL = 'https://sdk.lunarg.com/sdk/download/1.2.170.0/windows/VulkanSDK-1.2.170.0-DebugLibs.zip'
+# VulkanSDKDebugLibsURL = 'https://sdk.lunarg.com/sdk/download/1.2.170.0/windows/VulkanSDK-1.2.170.0-DebugLibs.zip'
+VulkanSDKDebugLibsURL = 'https://drive.google.com/u/0/uc?export=download&confirm=YKdZ&id=1qKxKAmhbhWPBDzYC84wFcGZYXjURrcpt'
 OutputDirectory = "Viking/Vendor/VulkanSDK"
 TempZipFile = f"{OutputDirectory}/VulkanSDK.zip"
 
