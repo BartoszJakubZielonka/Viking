@@ -23,12 +23,24 @@ namespace Viking {
         RenderCommand::setViewport(0, 0, width, height);
     }
 
-    void Renderer::beginScene(OrthographicCamera &camera) {
-        sSceneData->ViewProjectionMatrix = camera.getViewProjectionMatrix();
+    void Renderer::beginScene(const Camera& camera, const glm::mat4& transform)
+    {
+        VI_PROFILE_FUNCTION();
     }
 
-    void Renderer::endScene() {
+    void Renderer::beginScene(const EditorCamera& camera)
+    {
+        VI_PROFILE_FUNCTION();
+    }
 
+    void Renderer::endScene()
+    {
+        VI_PROFILE_FUNCTION();
+    }
+
+    void Renderer::drawMesh(const glm::mat4& transform, MeshRendererComponent& src, int entityID)
+    {
+        VI_PROFILE_FUNCTION();
     }
 
     void Renderer::submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform)

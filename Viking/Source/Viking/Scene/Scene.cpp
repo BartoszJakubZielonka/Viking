@@ -1,12 +1,9 @@
-//
-// Created by batzi on 16.05.2021.
-//
-
 #include "vipch.h"
 #include "Scene.h"
 
 #include "Components.h"
 #include "Viking/Renderer/Renderer2D.h"
+#include "Viking/Renderer/Renderer.h"
 
 #include <glm/glm.hpp>
 
@@ -22,12 +19,12 @@ namespace Viking {
         return entity;
     }
 
-    void Scene::destroyEntity(Entity entity)
+    void Scene::destroyEntity(const Entity entity)
     {
         mRegistry.destroy(entity);
     }
 
-    void Scene::onUpdateRuntime(Timestep ts) {
+    void Scene::onUpdateRuntime(const Timestep ts) {
         //Update Scripts
         {
             mRegistry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc) {
@@ -70,7 +67,7 @@ namespace Viking {
             {
                 auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
-                Renderer2D::drawSprite(transform.getTransform(), sprite, (int)entity);
+                Renderer2D::drawSprite(transform.getTransform(), sprite, static_cast<int>(entity));
             }
 
             Renderer2D::endScene();
@@ -80,15 +77,27 @@ namespace Viking {
     void Scene::onUpdateEditor(Timestep ts, EditorCamera &camera) {
         Renderer2D::beginScene(camera);
 
-        auto group = mRegistry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-        for (auto entity : group)
+        auto spriteGroup = mRegistry.group<SpriteRendererComponent>(entt::get<TransformComponent>);
+        for (auto entity : spriteGroup)
         {
-            auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+            auto [transform, sprite] = spriteGroup.get<TransformComponent, SpriteRendererComponent>(entity);
 
-            Renderer2D::drawSprite(transform.getTransform(), sprite, (int)entity);
+            Renderer2D::drawSprite(transform.getTransform(), sprite, static_cast<int>(entity));
         }
 
         Renderer2D::endScene();
+
+        Renderer::beginScene(camera);
+
+        auto group = mRegistry.group<MeshRendererComponent>(entt::get<TransformComponent>);
+        for (auto entity : group)
+        {
+            auto [transform, mesh] = group.get<TransformComponent, MeshRendererComponent>(entity);
+
+            Renderer::drawMesh(transform.getTransform(), mesh, static_cast<int>(entity));
+        }
+
+        Renderer::endScene();
     }
 
     void Scene::onViewportResize(uint32_t width, uint32_t height)
@@ -109,8 +118,7 @@ namespace Viking {
         auto view = mRegistry.view<CameraComponent>();
         for (auto entity : view)
         {
-            const auto& camera = view.get<CameraComponent>(entity);
-            if (camera.Primary)
+            if (const auto & camera = view.get<CameraComponent>(entity); camera.Primary)
                 return Entity{entity, this};
         }
         return {};

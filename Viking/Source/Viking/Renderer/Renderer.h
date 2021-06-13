@@ -7,8 +7,11 @@
 
 #include "Viking/Renderer/RenderCommand.h"
 
-#include "Viking/Renderer/OrthographicCamera.h"
+#include "Viking/Renderer/Camera.h"
+#include "Viking/Renderer/EditorCamera.h"
 #include "Viking/Renderer/Shader.h"
+
+#include "Viking/Scene/Components.h"
 
 namespace Viking {
     class Renderer {
@@ -18,8 +21,11 @@ namespace Viking {
 
         static void onWindowResize(uint32_t width, uint32_t height);
 
-        static void beginScene(OrthographicCamera& camera);
+        static void beginScene(const Camera& camera, const glm::mat4& transform);
+        static void beginScene(const EditorCamera& camera);
         static void endScene();
+
+        static void drawMesh(const glm::mat4& transform, MeshRendererComponent& src, int entityID);
 
         static void submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform = glm::mat4(1.0f));
 

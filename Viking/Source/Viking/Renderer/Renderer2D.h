@@ -5,8 +5,6 @@
 #ifndef VIKING_RENDERER2D_H
 #define VIKING_RENDERER2D_H
 
-#include "Viking/Renderer/OrthographicCamera.h"
-
 #include "Viking/Renderer/Texture.h"
 
 #include "Viking/Renderer/Camera.h"
