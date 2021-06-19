@@ -5,10 +5,10 @@ Entities:
       Tag: Top
     TransformComponent:
       Translation: [0, 0.5, 0]
-      Rotation: [1.57079637, 0.785398185, 0]
+      Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     MeshRendererComponent:
-      Path: D:\Projekty\Viking\VikingEditor\assets\meshes\Survival_BackPack_2\Survival_BackPack_2.fbx
+      Path: D:\Projekty\Viking\VikingEditor\assets\meshes\backpack\backpack.obj
   - Entity: 12837192831273
     TagComponent:
       Tag: Camera

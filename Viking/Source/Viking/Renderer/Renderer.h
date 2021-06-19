@@ -25,12 +25,14 @@ namespace Viking {
         static void beginScene(const EditorCamera& camera);
         static void endScene();
 
-        static void drawMesh(const glm::mat4& transform, MeshRendererComponent& src, int entityID);
+        static void submitMesh(const glm::mat4& transform, MeshRendererComponent& src, int entityID);
 
         static void submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform = glm::mat4(1.0f));
 
         static RendererAPI::API getAPI() { return RendererAPI::getAPI(); }
     private:
+        static void drawMesh(const Ref<Mesh>& mesh, const glm::mat4& transform, int32_t entityId);
+
         struct SceneData
         {
             glm::mat4 ViewProjectionMatrix;

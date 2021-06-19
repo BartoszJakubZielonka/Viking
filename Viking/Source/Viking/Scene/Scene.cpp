@@ -94,7 +94,7 @@ namespace Viking {
         {
             auto [transform, mesh] = group.get<TransformComponent, MeshRendererComponent>(entity);
 
-            Renderer::drawMesh(transform.getTransform(), mesh, static_cast<int>(entity));
+            Renderer::submitMesh(transform.getTransform(), mesh, static_cast<int>(entity));
         }
 
         Renderer::endScene();
