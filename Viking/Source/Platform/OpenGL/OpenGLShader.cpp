@@ -12,6 +12,7 @@
 #include <shaderc/shaderc.hpp>
 #include <spirv_cross/spirv_cross.hpp>
 #include <spirv_cross/spirv_glsl.hpp>
+#include <utility>
 
 #include "Viking/Core/Timer.h"
 
@@ -28,7 +29,7 @@ namespace Viking {
             return 0;
         }
 
-        static shaderc_shader_kind glShaderStageToShaderC(GLenum stage)
+        static shaderc_shader_kind glShaderStageToShaderC(const GLenum stage)
         {
             switch (stage)
             {
@@ -36,10 +37,10 @@ namespace Viking {
                 case GL_FRAGMENT_SHADER: return shaderc_glsl_fragment_shader;
             }
             VI_CORE_ASSERT(false);
-            return (shaderc_shader_kind)0;
+            return static_cast<shaderc_shader_kind>(0);
         }
 
-        static const char* glShaderStageToString(GLenum stage)
+        static const char* glShaderStageToString(const GLenum stage)
         {
             switch (stage)
             {
@@ -58,12 +59,11 @@ namespace Viking {
 
         static void createCacheDirectoryIfNeeded()
         {
-            std::string cacheDirectory = getCacheDirectory();
-            if (!std::filesystem::exists(cacheDirectory))
+            if (std::string cacheDirectory = getCacheDirectory(); !std::filesystem::exists(cacheDirectory))
                 std::filesystem::create_directories(cacheDirectory);
         }
 
-        static const char* glShaderStageCachedOpenGLFileExtension(uint32_t stage)
+        static const char* glShaderStageCachedOpenGLFileExtension(const uint32_t stage)
         {
             switch (stage)
             {
@@ -74,7 +74,7 @@ namespace Viking {
             return "";
         }
 
-        static const char* glShaderStageCachedVulkanFileExtension(uint32_t stage)
+        static const char* glShaderStageCachedVulkanFileExtension(const uint32_t stage)
         {
             switch (stage)
             {
@@ -92,10 +92,9 @@ namespace Viking {
 
         Utils::createCacheDirectoryIfNeeded();
 
-        std::string source = readFile(filepath);
-        auto shaderSources = preProcess(source);
-
         {
+            const std::string source = readFile(filepath);
+            const auto shaderSources = preProcess(source);
             Timer timer;
             compileOrGetVulkanBinaries(shaderSources);
             compileOrGetOpenGLBinaries();
@@ -106,12 +105,12 @@ namespace Viking {
         // Extract name from filepath
         auto lastSlash = filepath.find_last_of("/\\");
         lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
-        auto lastDot = filepath.rfind('.');
-        auto count = lastDot == std::string::npos ? filepath.size() - lastSlash : lastDot - lastSlash;
+        const auto lastDot = filepath.rfind('.');
+        const auto count = lastDot == std::string::npos ? filepath.size() - lastSlash : lastDot - lastSlash;
         mName = filepath.substr(lastSlash, count);
     }
 
-    OpenGLShader::OpenGLShader(const std::string &name, const std::string &vertexSrc, const std::string &fragmentSrc): mName(name) {
+    OpenGLShader::OpenGLShader(std::string name, const std::string &vertexSrc, const std::string &fragmentSrc): mName(std::move(name)) {
         VI_PROFILE_FUNCTION();
 
         std::unordered_map<GLenum, std::string> sources;
@@ -135,89 +134,91 @@ namespace Viking {
         glUseProgram(mRendererID);
     }
 
-    void OpenGLShader::unbind() const {
-        VI_PROFILE_FUNCTION();
-
-        glUseProgram(0);
-    }
-
-    void OpenGLShader::setInt(const std::string &name, int value) {
+    void OpenGLShader::setUniform(const std::string &name, int value) {
         VI_PROFILE_FUNCTION();
 
         uploadUniformInt(name, value);
     }
 
-    void OpenGLShader::setIntArray(const std::string &name, int *values, uint32_t count) {
+    void OpenGLShader::setUniform(const std::string &name, int *values, uint32_t count) {
         uploadUniformIntArray(name, values, count);
     }
 
-    void OpenGLShader::setFloat(const std::string &name, float value) {
+    void OpenGLShader::setUniform(const std::string &name, float value) {
         VI_PROFILE_FUNCTION();
 
         uploadUniformFloat(name, value);
     }
 
-    void OpenGLShader::setFloat2(const std::string &name, const glm::vec2 &value) {
+    void OpenGLShader::setUniform(const std::string &name, const glm::vec2 &value) {
         VI_PROFILE_FUNCTION();
 
         uploadUniformFloat2(name, value);
     }
 
-    void OpenGLShader::setFloat3(const std::string &name, const glm::vec3 &value) {
+    void OpenGLShader::setUniform(const std::string &name, const glm::vec3 &value) {
         VI_PROFILE_FUNCTION();
 
         uploadUniformFloat3(name, value);
     }
 
-    void OpenGLShader::setFloat4(const std::string &name, const glm::vec4 &value) {
+    void OpenGLShader::setUniform(const std::string &name, const glm::vec4 &value) {
         VI_PROFILE_FUNCTION();
 
         uploadUniformFloat4(name, value);
     }
 
-    void OpenGLShader::setMat4(const std::string &name, const glm::mat4 &value) {
+    void OpenGLShader::setUniform(const std::string &name, const glm::mat4 &value) {
         VI_PROFILE_FUNCTION();
 
         uploadUniformMat4(name, value);
     }
 
-    void OpenGLShader::uploadUniformInt(const std::string &name, int value) {
-        GLint location = glGetUniformLocation(mRendererID, name.c_str());
+    void OpenGLShader::uploadUniformInt(const std::string &name, int value) const
+    {
+        const GLint location = glGetUniformLocation(mRendererID, name.c_str());
         glUniform1i(location, value);
     }
 
-    void OpenGLShader::uploadUniformIntArray(const std::string &name, int *values, uint32_t count) {
-        GLint location = glGetUniformLocation(mRendererID, name.c_str());
+    void OpenGLShader::uploadUniformIntArray(const std::string &name, int *values, uint32_t count) const
+    {
+        const GLint location = glGetUniformLocation(mRendererID, name.c_str());
         glUniform1iv(location, count, values);
     }
 
-    void OpenGLShader::uploadUniformFloat(const std::string &name, float value) {
-        GLint location = glGetUniformLocation(mRendererID, name.c_str());
+    void OpenGLShader::uploadUniformFloat(const std::string &name, float value) const
+    {
+        const GLint location = glGetUniformLocation(mRendererID, name.c_str());
         glUniform1f(location, value);
     }
 
-    void OpenGLShader::uploadUniformFloat2(const std::string &name, const glm::vec2 &value) {
-        GLint location = glGetUniformLocation(mRendererID, name.c_str());
+    void OpenGLShader::uploadUniformFloat2(const std::string &name, const glm::vec2 &value) const
+    {
+        const GLint location = glGetUniformLocation(mRendererID, name.c_str());
         glUniform2f(location, value.x, value.y);
     }
 
-    void OpenGLShader::uploadUniformFloat3(const std::string &name, const glm::vec3 &value) {
-        GLint location = glGetUniformLocation(mRendererID, name.c_str());
+    void OpenGLShader::uploadUniformFloat3(const std::string &name, const glm::vec3 &value) const
+    {
+        const GLint location = glGetUniformLocation(mRendererID, name.c_str());
         glUniform3f(location, value.x, value.y, value.z);
     }
 
-    void OpenGLShader::uploadUniformFloat4(const std::string &name, const glm::vec4 &value) {
-        GLint location = glGetUniformLocation(mRendererID, name.c_str());
+    void OpenGLShader::uploadUniformFloat4(const std::string &name, const glm::vec4 &value) const
+    {
+        const GLint location = glGetUniformLocation(mRendererID, name.c_str());
         glUniform4f(location, value.x, value.y, value.z, value.w);
     }
 
-    void OpenGLShader::uploadUniformMat3(const std::string &name, const glm::mat3 &matrix) {
-        GLint location = glGetUniformLocation(mRendererID, name.c_str());
+    void OpenGLShader::uploadUniformMat3(const std::string &name, const glm::mat3 &matrix) const
+    {
+        const GLint location = glGetUniformLocation(mRendererID, name.c_str());
         glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
     }
 
-    void OpenGLShader::uploadUniformMat4(const std::string &name, const glm::mat4 &matrix) {
-        GLint location = glGetUniformLocation(mRendererID, name.c_str());
+    void OpenGLShader::uploadUniformMat4(const std::string &name, const glm::mat4 &matrix) const
+    {
+        const GLint location = glGetUniformLocation(mRendererID, name.c_str());
         glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
     }
 
@@ -229,8 +230,7 @@ namespace Viking {
         if (in)
         {
             in.seekg(0, std::ios::end);
-            size_t size = in.tellg();
-            if (size != -1)
+            if (size_t size = in.tellg(); size != -1)
             {
                 result.resize(size);
                 in.seekg(0, std::ios::beg);
@@ -254,19 +254,19 @@ namespace Viking {
 
         std::unordered_map<GLenum, std::string> shaderSources;
 
-        const char* typeToken = "#type";
-        size_t typeTokenLength = strlen(typeToken);
+        const auto typeToken = "#type";
+        const size_t typeTokenLength = strlen(typeToken);
         size_t pos = source.find(typeToken, 0); //Start of shader type declaration line
         while (pos != std::string::npos)
         {
             size_t eol = source.find_first_of("\r\n", pos); //End of shader type declaration line
-            VI_CORE_ASSERT(eol != std::string::npos, "Syntax error");
+            VI_CORE_ASSERT(eol != std::string::npos, "Syntax error")
             size_t begin = pos + typeTokenLength + 1; //Start of shader type name (after "#type " keyword)
             std::string type = source.substr(begin, eol - begin);
-            VI_CORE_ASSERT(Utils::shaderTypeFromString(type), "Invalid shader type specified");
+            VI_CORE_ASSERT(Utils::shaderTypeFromString(type), "Invalid shader type specified")
 
             size_t nextLinePos = source.find_first_not_of("\r\n", eol); //Start of shader code after shader type declaration line
-            VI_CORE_ASSERT(nextLinePos != std::string::npos, "Syntax error");
+            VI_CORE_ASSERT(nextLinePos != std::string::npos, "Syntax error")
             pos = source.find(typeToken, nextLinePos); //Start of next shader type declaration line
 
             shaderSources[Utils::shaderTypeFromString(type)] = (pos == std::string::npos) ? source.substr(nextLinePos) : source.substr(nextLinePos, pos - nextLinePos);
@@ -278,11 +278,9 @@ namespace Viking {
     void OpenGLShader::compileOrGetVulkanBinaries(const std::unordered_map<GLenum, std::string> &shaderSources) {
         GLuint program = glCreateProgram();
 
-        shaderc::Compiler compiler;
         shaderc::CompileOptions options;
         options.SetTargetEnvironment(shaderc_target_env_vulkan, shaderc_env_version_vulkan_1_2);
-        const bool optimize = true;
-        if (optimize)
+        if (const bool optimize = true; optimize)
             options.SetOptimizationLevel(shaderc_optimization_level_performance);
 
         std::filesystem::path cacheDirectory = Utils::getCacheDirectory();
@@ -294,8 +292,7 @@ namespace Viking {
             std::filesystem::path shaderFilePath = mFilePath;
             std::filesystem::path cachedPath = cacheDirectory / (shaderFilePath.filename().string() + Utils::glShaderStageCachedVulkanFileExtension(stage));
 
-            std::ifstream in(cachedPath, std::ios::in | std::ios::binary);
-            if (in.is_open())
+            if (std::ifstream in(cachedPath, std::ios::in | std::ios::binary); in.is_open())
             {
                 in.seekg(0, std::ios::end);
                 auto size = in.tellg();
@@ -303,24 +300,24 @@ namespace Viking {
 
                 auto& data = shaderData[stage];
                 data.resize(size / sizeof(uint32_t));
-                in.read((char*)data.data(), size);
+                in.read(reinterpret_cast<char*>(data.data()), size);
             }
             else
             {
+                shaderc::Compiler compiler;
                 shaderc::SpvCompilationResult module = compiler.CompileGlslToSpv(source, Utils::glShaderStageToShaderC(stage), mFilePath.c_str(), options);
                 if (module.GetCompilationStatus() != shaderc_compilation_status_success)
                 {
                     VI_CORE_ERROR(module.GetErrorMessage());
-                    VI_CORE_ASSERT(false);
+                    VI_CORE_ASSERT(false)
                 }
 
                 shaderData[stage] = std::vector<uint32_t>(module.cbegin(), module.cend());
 
-                std::ofstream out(cachedPath, std::ios::out | std::ios::binary);
-                if (out.is_open())
+                if (std::ofstream out(cachedPath, std::ios::out | std::ios::binary); out.is_open())
                 {
                     auto& data = shaderData[stage];
-                    out.write((char*)data.data(), data.size() * sizeof(uint32_t));
+                    out.write(reinterpret_cast<char*>(data.data()), data.size() * sizeof(uint32_t));
                     out.flush();
                     out.close();
                 }
@@ -334,11 +331,9 @@ namespace Viking {
     void OpenGLShader::compileOrGetOpenGLBinaries() {
         auto& shaderData = mOpenGLSPIRV;
 
-        shaderc::Compiler compiler;
         shaderc::CompileOptions options;
         options.SetTargetEnvironment(shaderc_target_env_opengl, shaderc_env_version_opengl_4_5);
-        const bool optimize = false;
-        if (optimize)
+        if (const bool optimize = false; optimize)
             options.SetOptimizationLevel(shaderc_optimization_level_performance);
 
         std::filesystem::path cacheDirectory = Utils::getCacheDirectory();
@@ -350,8 +345,7 @@ namespace Viking {
             std::filesystem::path shaderFilePath = mFilePath;
             std::filesystem::path cachedPath = cacheDirectory / (shaderFilePath.filename().string() + Utils::glShaderStageCachedOpenGLFileExtension(stage));
 
-            std::ifstream in(cachedPath, std::ios::in | std::ios::binary);
-            if (in.is_open())
+            if (std::ifstream in(cachedPath, std::ios::in | std::ios::binary); in.is_open())
             {
                 in.seekg(0, std::ios::end);
                 auto size = in.tellg();
@@ -359,10 +353,11 @@ namespace Viking {
 
                 auto& data = shaderData[stage];
                 data.resize(size / sizeof(uint32_t));
-                in.read((char*)data.data(), size);
+                in.read(reinterpret_cast<char*>(data.data()), size);
             }
             else
             {
+                shaderc::Compiler compiler;
                 spirv_cross::CompilerGLSL glslCompiler(spirv);
                 mOpenGLSourceCode[stage] = glslCompiler.compile();
                 auto& source = mOpenGLSourceCode[stage];
@@ -371,16 +366,15 @@ namespace Viking {
                 if (module.GetCompilationStatus() != shaderc_compilation_status_success)
                 {
                     VI_CORE_ERROR(module.GetErrorMessage());
-                    VI_CORE_ASSERT(false);
+                    VI_CORE_ASSERT(false)
                 }
 
                 shaderData[stage] = std::vector<uint32_t>(module.cbegin(), module.cend());
 
-                std::ofstream out(cachedPath, std::ios::out | std::ios::binary);
-                if (out.is_open())
+                if (std::ofstream out(cachedPath, std::ios::out | std::ios::binary); out.is_open())
                 {
                     auto& data = shaderData[stage];
-                    out.write((char*)data.data(), data.size() * sizeof(uint32_t));
+                    out.write(reinterpret_cast<char*>(data.data()), data.size() * sizeof(uint32_t));
                     out.flush();
                     out.close();
                 }
@@ -394,10 +388,10 @@ namespace Viking {
         std::vector<GLuint> shaderIDs;
         for (auto&& [stage, spirv] : mOpenGLSPIRV)
         {
-            GLuint shaderID = shaderIDs.emplace_back(glCreateShader(stage));
-            glShaderBinary(1, &shaderID, GL_SHADER_BINARY_FORMAT_SPIR_V, spirv.data(), spirv.size() * sizeof(uint32_t));
-            glSpecializeShader(shaderID, "main", 0, nullptr, nullptr);
-            glAttachShader(program, shaderID);
+            GLuint shaderId = shaderIDs.emplace_back(glCreateShader(stage));
+            glShaderBinary(1, &shaderId, GL_SHADER_BINARY_FORMAT_SPIR_V, spirv.data(), sizeof(uint32_t) * spirv.size());
+            glSpecializeShader(shaderId, "main", 0, nullptr, nullptr);
+            glAttachShader(program, shaderId);
         }
 
         glLinkProgram(program);
@@ -429,22 +423,22 @@ namespace Viking {
     }
 
     void OpenGLShader::reflect(GLenum stage, const std::vector<uint32_t> &shaderData) {
-        spirv_cross::Compiler compiler(shaderData);
-        spirv_cross::ShaderResources resources = compiler.get_shader_resources();
+        const spirv_cross::Compiler compiler(shaderData);
+        auto [uniform_buffers, storage_buffers, stage_inputs, stage_outputs, subpass_inputs, storage_images, sampled_images, atomic_counters, acceleration_structures, push_constant_buffers, separate_images, separate_samplers] = compiler.get_shader_resources();
 
         VI_CORE_TRACE("OpenGLShader::Reflect - {0} {1}", Utils::glShaderStageToString(stage), mFilePath);
-        VI_CORE_TRACE("    {0} uniform buffers", resources.uniform_buffers.size());
-        VI_CORE_TRACE("    {0} resources", resources.sampled_images.size());
+        VI_CORE_TRACE("    {0} uniform buffers", uniform_buffers.size());
+        VI_CORE_TRACE("    {0} resources", sampled_images.size());
 
         VI_CORE_TRACE("Uniform buffers:");
-        for (const auto& resource : resources.uniform_buffers)
+        for (const auto& [id, type_id, base_type_id, name] : uniform_buffers)
         {
-            const auto& bufferType = compiler.get_type(resource.base_type_id);
-            uint32_t bufferSize = compiler.get_declared_struct_size(bufferType);
-            uint32_t binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
-            int memberCount = bufferType.member_types.size();
+            const auto& bufferType = compiler.get_type(base_type_id);
+            size_t bufferSize = compiler.get_declared_struct_size(bufferType);
+            uint32_t binding = compiler.get_decoration(id, spv::DecorationBinding);
+            size_t memberCount = bufferType.member_types.size();
 
-            VI_CORE_TRACE("  {0}", resource.name);
+            VI_CORE_TRACE("  {0}", name);
             VI_CORE_TRACE("    Size = {0}", bufferSize);
             VI_CORE_TRACE("    Binding = {0}", binding);
             VI_CORE_TRACE("    Members = {0}", memberCount);

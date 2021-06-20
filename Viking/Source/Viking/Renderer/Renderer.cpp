@@ -11,11 +11,22 @@
 namespace Viking {
     Scope<Renderer::SceneData> Renderer::sSceneData = createScope<SceneData>();
 
+    struct MeshVertex {
+        glm::vec3 Position;
+        glm::vec4 Color;
+        glm::vec2 TexCoord;
+        float TexIndex;
+        float TilingFactor;
+
+        // Editor-only
+        int EntityID;
+    };
+
     struct RendererData
     {
         static const uint32_t MAX_TEXTURE_SLOTS{ 32 }; //TODO RenderCaps.
 
-        Ref<Shader> textureShader{ nullptr };
+        Ref<Shader> meshShader{ nullptr };
 
         Ref<Texture2D> whitTexture{ nullptr };
 
@@ -40,7 +51,7 @@ namespace Viking {
         RenderCommand::init();
         Renderer2D::init();
 
-        sData.textureShader = Shader::create(R"(assets/shaders/Texture.glsl)");
+        sData.meshShader = Shader::create(R"(assets/shaders/testShader.glsl)");
 
         sData.whitTexture = Texture2D::create(1, 1);
         auto whiteTextureData{ 0xffffffff };
@@ -49,9 +60,6 @@ namespace Viking {
         int32_t samplers[RendererData::MAX_TEXTURE_SLOTS];
         for(uint32_t i = 0; i < RendererData::MAX_TEXTURE_SLOTS; i++)
             samplers[i] = i;
-
-        sData.textureShader->bind();
-        sData.textureShader->setInt("u_DiffuseTexture", 0);
 
         sData.cameraUniformBuffer = UniformBuffer::create(sizeof(RendererData::CameraData), 0);
     }
@@ -72,31 +80,20 @@ namespace Viking {
     void Renderer::beginScene(const EditorCamera& camera)
     {
         VI_PROFILE_FUNCTION();
-        sData.textureShader->bind();
-        sData.textureShader->setMat4("u_ViewProj", camera.getViewProjection());
+        sData.meshShader->bind();
+        sData.meshShader->setUniform("u_ViewProjection", camera.getViewProjection());
         sData.mViewProj = camera.getViewProjection();
     }
 
     void Renderer::endScene()
     {
         VI_PROFILE_FUNCTION();
-        sData.textureShader->unbind();
     }
 
     void Renderer::submitMesh(const glm::mat4& transform, MeshRendererComponent& src, int entityID)
     {
         VI_PROFILE_FUNCTION();
         drawMesh(src.mesh, transform, entityID);
-    }
-
-    void Renderer::submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform)
-    {
-        shader->bind();
-        shader->setMat4("u_ViewProjection", sSceneData->ViewProjectionMatrix);
-        shader->setMat4("u_Transform", transform);
-
-        vertexArray->bind();
-        RenderCommand::drawIndexed(vertexArray);
     }
 
     void Renderer::drawMesh(const Ref<Mesh>& mesh, const glm::mat4& transform, int32_t entityId)
@@ -110,14 +107,14 @@ namespace Viking {
         sData.cameraUniformBuffer->setData(&sData.cameraBuffer, sizeof(RendererData::CameraData));
 
         sData.whitTexture->bind();
-        sData.textureShader->setFloat4("u_Color", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-        sData.textureShader->setInt("u_EntityId", entityId);
 
-        for (auto& submesh : mesh->mSubMeshes)
+        sData.meshShader->setUniform("u_EntityId", entityId);
+
+        for (auto& [baseVertex, baseIndex, materialIndex, indexCount, transform, nodeName, meshName] : mesh->mSubMeshes)
         {
-            sData.textureShader->setMat4("u_Model", transform * submesh.transform);
+            sData.meshShader->setUniform("u_Model", transform * transform);
 
-            glDrawElementsBaseVertex(GL_TRIANGLES, submesh.indexCount, GL_UNSIGNED_INT, reinterpret_cast<void*>(sizeof(uint32_t) * submesh.baseIndex), submesh.baseVertex);
+            glDrawElementsBaseVertex(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, reinterpret_cast<void*>(sizeof(uint32_t) * baseIndex), baseVertex);
         }
 
         mesh->mVertexBuffer->unbind();

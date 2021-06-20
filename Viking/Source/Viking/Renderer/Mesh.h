@@ -77,6 +77,7 @@ namespace Viking
 
         const aiScene* mScene;
 
+
         std::unordered_map<uint32_t, std::vector<Triangle>> mTriangleCache;
 
         std::string mFilePath;
