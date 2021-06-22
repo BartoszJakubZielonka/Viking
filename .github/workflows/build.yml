@@ -46,13 +46,13 @@ jobs:
         file-name: 'VulkanSDK-DebugLibs.zip'
         location: './Viking/Vendor/'
 
-    - name: Run setup
+    - name: Extract Vulkan debug libs
       shell: pwsh
       run: Expand-Archive -Path Viking\Vendor\VulkanSDK-DebugLibs.zip -DestinationPath Viking\Vendor\VulkanSDK
 
-    # - name: Run setup
-    #   shell: cmd
-    #   run: Setup.bat
+    - name: Run setup
+      shell: cmd
+      run: Setup.bat
 
     # - name: Build
     #   working-directory: ${{env.GITHUB_WORKSPACE}}
