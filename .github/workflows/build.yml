@@ -40,7 +40,7 @@ jobs:
 
     - name: Download a Vulkan debug libs
       uses: carlosperate/download-file-action@v1.0.3
-      id: download-poetry
+      id: download-vulkan-debug-libs
       with:
         file-url: 'https://sdk.lunarg.com/sdk/download/1.2.170.0/windows/VulkanSDK-1.2.170.0-DebugLibs.zip'
         file-name: 'VulkanSDK-DebugLibs.zip'
@@ -52,7 +52,7 @@ jobs:
 
     - name: Download a Premake5
       uses: carlosperate/download-file-action@v1.0.3
-      id: download-poetry
+      id: download-premake
       with:
         file-url: 'https://github.com/premake/premake-core/releases/download/v5.0.0-alpha16/premake-windows.zip'
         file-name: 'premake-windows.zip'
