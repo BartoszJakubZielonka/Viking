@@ -39,7 +39,7 @@ jobs:
         architecture: 'x64'
 
     - name: Setup premake
-      uses: @abel0b/setup-premake@v1
+      uses: abel0b/setup-premake@v1
 
     # - name: Run setup
     #   shell: cmd
