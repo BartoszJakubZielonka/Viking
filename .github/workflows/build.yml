@@ -50,37 +50,49 @@ jobs:
       shell: pwsh
       run: Expand-Archive -Path Viking\Vendor\VulkanSDK-DebugLibs.zip -DestinationPath Viking\Vendor\VulkanSDK
 
+    - name: Download a Premake5
+      uses: carlosperate/download-file-action@v1.0.3
+      id: download-poetry
+      with:
+        file-url: 'https://github.com/premake/premake-core/releases/download/v5.0.0-alpha16/premake-windows.zip'
+        file-name: 'premake-windows.zip'
+        location: './Vendor/premake/bin'
+
+    - name: Extract Premake5
+      shell: pwsh
+      run: Expand-Archive -Path Vendor\premake\bin\premake-windows.zip -DestinationPath Vendor\premake\bin
+
     - name: Run setup
       shell: cmd
       run: Setup.bat
 
-    # - name: Build
-    #   working-directory: ${{env.GITHUB_WORKSPACE}}
-    #   # Add additional options to the MSBuild command line here (like platform or verbosity level).
-    #   # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
-    #   run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
+    - name: Build
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      # Add additional options to the MSBuild command line here (like platform or verbosity level).
+      # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
+      run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
       
-  # analyze:
-  #   needs: build
-  #   name: CodeQL Analyze
-  #   runs-on: windows-latest
-  #   permissions:
-  #     actions: read
-  #     contents: read
-  #     security-events: write
+  analyze:
+    needs: build
+    name: CodeQL Analyze
+    runs-on: windows-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
       
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       language: [ 'cpp', 'python' ]
-  #   steps:
-  #   - name: Checkout repository
-  #     uses: actions/checkout@v2
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'cpp', 'python' ]
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
       
-  #   - name: Initialize CodeQL
-  #     uses: github/codeql-action/init@v1
-  #     with:
-  #       languages: ${{ matrix.language }}
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: ${{ matrix.language }}
 
-  #   - name: Perform CodeQL Analysis
-  #     uses: github/codeql-action/analyze@v1
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1
