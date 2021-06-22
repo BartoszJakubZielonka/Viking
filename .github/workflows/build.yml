@@ -46,10 +46,9 @@ jobs:
         file-name: 'VulkanSDK-DebugLibs.zip'
         location: './Viking/Vendor/'
 
-    - name: Decompress Vulkan debug libs
-      uses: TonyBogdanov/zip@1.0
-      with:
-        args: unzip -qq ./VulkanSDK-DebugLibs.zip -d ./VulkanSDK
+    - name: Run setup
+      shell: pwsh
+      run: Expand-Archive -Path Viking\Vendor\VulkanSDK-DebugLibs.zip -DestinationPath Viking\Vendor\VulkanSDK
 
     # - name: Run setup
     #   shell: cmd
