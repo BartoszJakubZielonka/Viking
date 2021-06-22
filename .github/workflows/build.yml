@@ -54,7 +54,7 @@ jobs:
       uses: carlosperate/download-file-action@v1.0.3
       id: download-premake
       with:
-        file-url: 'https://github.com/premake/premake-core/releases/download/v5.0.0-alpha16/premake-windows.zip'
+        file-url: 'https://github.com/premake/premake-core/releases/download/v5.0.0-alpha16/premake-5.0.0-alpha16-windows.zip'
         file-name: 'premake-windows.zip'
         location: './Vendor/premake/bin'
 
