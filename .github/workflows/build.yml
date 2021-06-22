@@ -38,8 +38,18 @@ jobs:
         python-version: '3.9'
         architecture: 'x64'
 
-    - name: Setup premake
-      uses: abel0b/setup-premake@v1
+    - name: Download a Vulkan debug libs
+      uses: carlosperate/download-file-action@v1.0.3
+      id: download-poetry
+      with:
+        file-url: 'https://sdk.lunarg.com/sdk/download/1.2.170.0/windows/VulkanSDK-1.2.170.0-DebugLibs.zip'
+        file-name: 'VulkanSDK-DebugLibs.zip'
+        location: './Viking/Vendor/'
+
+      - name: Decompress Vulkan debug libs
+        uses: TonyBogdanov/zip@1.0
+        with:
+          args: unzip -qq ./VulkanSDK-DebugLibs.zip -d ./VulkanSDK
 
     # - name: Run setup
     #   shell: cmd
