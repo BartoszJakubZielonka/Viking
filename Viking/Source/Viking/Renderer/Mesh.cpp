@@ -85,27 +85,27 @@ namespace Viking
             indexCount += subMesh.indexCount;
 
             VI_CORE_ASSERT(mesh->HasPositions(), "Meshes require positions.")
-                VI_CORE_ASSERT(mesh->HasNormals(), "Meshes require normals.")
+            VI_CORE_ASSERT(mesh->HasNormals(), "Meshes require normals.")
 
-                for (size_t i{ 0 }; i < mesh->mNumVertices; i++)
+            for (size_t i{ 0 }; i < mesh->mNumVertices; i++)
+            {
+                Vertex vertex{};
+                vertex.position = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
+                vertex.normal = { mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z };
+
+                if (mesh->HasTangentsAndBitangents())
                 {
-                    Vertex vertex{};
-                    vertex.position = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
-                    vertex.normal = { mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z };
-
-                    if (mesh->HasTangentsAndBitangents())
-                    {
-                        vertex.tangent = { mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z };
-                        vertex.biTangent = { mesh->mBitangents[i].x, mesh->mBitangents[i].y, mesh->mBitangents[i].z };
-                    }
-
-                    if (mesh->HasTextureCoords(0))
-                        vertex.texCoords = { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y };
-                    else
-                        vertex.texCoords = { 0.0f, 0.0f };
-
-                    mStaticVertices.push_back(vertex);
+                    vertex.tangent = { mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z };
+                    vertex.biTangent = { mesh->mBitangents[i].x, mesh->mBitangents[i].y, mesh->mBitangents[i].z };
                 }
+
+                if (mesh->HasTextureCoords(0))
+                    vertex.texCoords = { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y };
+                else
+                    vertex.texCoords = { 0.0f, 0.0f };
+
+                mStaticVertices.push_back(vertex);
+            }
 
             for (size_t i = 0; i < mesh->mNumFaces; i++)
             {
@@ -116,6 +116,68 @@ namespace Viking
 
                 mTriangleCache[m].emplace_back(mStaticVertices[index.v1 + subMesh.baseVertex], mStaticVertices[index.v2 + subMesh.baseVertex], mStaticVertices[index.v3 + subMesh.baseVertex]);
             }
+        }
+
+        if(mScene->HasMaterials())
+        {
+            VI_CORE_INFO("Materials: {0}", filename);
+
+            //TODO: Resize texture vector
+            //TODO: Resize material vector
+
+            //TODO: Read white texture
+            //TODO: Read black texture
+
+            for(auto it{0}; it < scene->mNumMaterials; it++)
+            {
+                auto aiMaterial = scene->mMaterials[it];
+                auto aiMaterialName = aiMaterial->GetName();
+
+                //TODO: Create material
+                //auto material = Material::create(mMeshShader, aiMaterialName.data);
+                //mMaterials[it] = mi;
+
+                VI_CORE_INFO("  {0} (Index = {1})", aiMaterialName.data, it);
+
+                aiString aiTexPath;
+                auto textureCount = aiMaterial->GetTextureCount(aiTextureType_DIFFUSE);
+                VI_CORE_INFO("    Texture count = {0}", textureCount);
+
+                glm::vec3 albedoColor(0.8f);
+                aiColor3D aiColor;
+                if(aiMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, aiColor) == AI_SUCCESS)
+                    albedoColor = { aiColor.r, aiColor.g, aiColor.b };
+
+                //material->set("u_MaterialUniforms.AlbedoColor", albedoColor);
+
+                auto shininess(0.0f), metalness{ 0.0f };
+                if (aiMaterial->Get(AI_MATKEY_SHININESS, shininess) != aiReturn_SUCCESS)
+                    shininess = 80.0f;
+                if (aiMaterial->Get(AI_MATKEY_REFLECTIVITY, metalness) != aiReturn_SUCCESS)
+                    metalness = 0.0f;
+
+                auto roughness = 1.0f - glm::sqrt(shininess / 100.0f);
+
+                VI_CORE_INFO("    COLOR = {0}, {1}, {2}", aiColor.r, aiColor.g, aiColor.b);
+                VI_CORE_INFO("    ROUGHNESS = {0}", roughness);
+                VI_CORE_INFO("    METALNESS = {0}", metalness);
+
+                auto hasAlbedoMap = aiMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &aiTexPath) == AI_SUCCESS;
+                auto fallback = !hasAlbedoMap;
+                if(hasAlbedoMap)
+                {
+                    //TODO MAke it handle by filesystem
+                    std::filesystem::path path = filename;
+                    auto parentPath = path.parent_path();
+                    parentPath /= std::string(aiTexPath.data);
+                    auto texturePath = parentPath.string();
+                    VI_CORE_INFO("    Albedo map path = {0}", texturePath);
+                }
+            }
+        }
+        else
+        {
+            VI_CORE_INFO("Defaults Materials for: {0}", filename);
         }
 
         traverseNodes(scene->mRootNode);
