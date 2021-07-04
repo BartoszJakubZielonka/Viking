@@ -122,12 +122,13 @@ namespace Viking
         {
             VI_CORE_INFO("Materials: {0}", filename);
 
-            //TODO: Resize texture vector
+            mTextures.resize(scene->mNumMaterials);
             //TODO: Resize material vector
 
             //TODO: Read white texture
             //TODO: Read black texture
 
+            //TODO consider use for each
             for(auto it{0}; it < scene->mNumMaterials; it++)
             {
                 auto aiMaterial = scene->mMaterials[it];
@@ -162,22 +163,182 @@ namespace Viking
                 VI_CORE_INFO("    ROUGHNESS = {0}", roughness);
                 VI_CORE_INFO("    METALNESS = {0}", metalness);
 
+                //Albedo map
                 auto hasAlbedoMap = aiMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &aiTexPath) == AI_SUCCESS;
                 auto fallback = !hasAlbedoMap;
                 if(hasAlbedoMap)
                 {
-                    //TODO MAke it handle by filesystem
+                    //TODO Make it handle by filesystem
                     std::filesystem::path path = filename;
                     auto parentPath = path.parent_path();
                     parentPath /= std::string(aiTexPath.data);
                     auto texturePath = parentPath.string();
                     VI_CORE_INFO("    Albedo map path = {0}", texturePath);
+
+                    auto texture = Texture2D::create(texturePath);
+
+                    //TODO Make if texture loaded
+                    mTextures[it] = texture;
+                    //TODO Material set albedo texture
+                    //TODO Material set albedo color.
+                }
+
+                if(fallback)
+                {
+                    VI_CORE_INFO("    No albedo map");
+                    //TODO Set white texture as a albedo map.
+                }
+
+                //Normal map
+                auto hasNormalMap = aiMaterial->GetTexture(aiTextureType_NORMALS, 0, &aiTexPath) == AI_SUCCESS;
+                fallback = !hasNormalMap;
+                if(hasNormalMap)
+                {
+                    //TODO Make it handle by filesystem
+                    std::filesystem::path path = filename;
+                    auto parentPath = path.parent_path();
+                    parentPath /= std::string(aiTexPath.data);
+                    auto texturePath = parentPath.string();
+                    VI_CORE_INFO("    Normal map path = {0}", texturePath);
+
+                    auto texture = Texture2D::create(texturePath);
+
+                    //TODO Make if texture loaded
+                    mTextures.push_back(texture);
+                    //TODO Material set normal texture
+                    //TODO Material set use normal map to true
+                }
+
+                if(fallback)
+                {
+                    VI_CORE_INFO("    No normal map");
+                    //TODO Set white texture as a normal map.
+                    //TODO Material set use normal map to false
+                }
+
+                //Roughness map
+                auto hasRoughnessMap = aiMaterial->GetTexture(aiTextureType_SHININESS, 0, &aiTexPath) == AI_SUCCESS;
+                fallback = !hasRoughnessMap;
+                if(hasRoughnessMap)
+                {
+                    //TODO Make it handle by filesystem
+                    std::filesystem::path path = filename;
+                    auto parentPath = path.parent_path();
+                    parentPath /= std::string(aiTexPath.data);
+                    auto texturePath = parentPath.string();
+                    VI_CORE_INFO("    Roughness map path = {0}", texturePath);
+
+                    auto texture = Texture2D::create(texturePath);
+
+                    //TODO Make if texture loaded
+                    mTextures.push_back(texture);
+                    //TODO Material set roughness texture
+                    //TODO Material set roughness to 1.0f
+                }
+
+                if(fallback)
+                {
+                    VI_CORE_INFO("    No roughness map");
+                    //TODO Set white texture as a roughness map.
+                    //TODO Material set use roughness to roughness
+                }
+
+                //TODO consider use for each
+                auto metalnessTextureFound{ false };
+                for( uint32_t p{0}; p < aiMaterial->mNumProperties; p++)
+                {
+                    auto prop = aiMaterial->mProperties[p];
+
+#ifdef VI_DEBUG
+                    VI_CORE_INFO("Material Property:");
+                    VI_CORE_INFO("  Name = {0}", prop->mKey.data);
+                    float data = *reinterpret_cast<float*>(prop->mData);
+                    VI_CORE_INFO("  Value = {0}", data);
+
+                    switch (prop->mSemantic)
+                    {
+                    case aiTextureType_NONE:
+                        VI_CORE_INFO("  Semantic = aiTextureType_NONE");
+                        break;
+                    case aiTextureType_DIFFUSE:
+                        VI_CORE_INFO("  Semantic = aiTextureType_DIFFUSE");
+                        break;
+                    case aiTextureType_SPECULAR:
+                        VI_CORE_INFO("  Semantic = aiTextureType_SPECULAR");
+                        break;
+                    case aiTextureType_AMBIENT:
+                        VI_CORE_INFO("  Semantic = aiTextureType_AMBIENT");
+                        break;
+                    case aiTextureType_EMISSIVE:
+                        VI_CORE_INFO("  Semantic = aiTextureType_EMISSIVE");
+                        break;
+                    case aiTextureType_HEIGHT:
+                        VI_CORE_INFO("  Semantic = aiTextureType_HEIGHT");
+                        break;
+                    case aiTextureType_NORMALS:
+                        VI_CORE_INFO("  Semantic = aiTextureType_NORMALS");
+                        break;
+                    case aiTextureType_SHININESS:
+                        VI_CORE_INFO("  Semantic = aiTextureType_SHININESS");
+                        break;
+                    case aiTextureType_OPACITY:
+                        VI_CORE_INFO("  Semantic = aiTextureType_OPACITY");
+                        break;
+                    case aiTextureType_DISPLACEMENT:
+                        VI_CORE_INFO("  Semantic = aiTextureType_DISPLACEMENT");
+                        break;
+                    case aiTextureType_LIGHTMAP:
+                        VI_CORE_INFO("  Semantic = aiTextureType_LIGHTMAP");
+                        break;
+                    case aiTextureType_REFLECTION:
+                        VI_CORE_INFO("  Semantic = aiTextureType_REFLECTION");
+                        break;
+                    case aiTextureType_UNKNOWN:
+                        VI_CORE_INFO("  Semantic = aiTextureType_UNKNOWN");
+                        break;
+                    }
+#endif
+
+                    if(prop->mType == aiPTI_String)
+                    {
+                        auto strLength = *reinterpret_cast<uint32_t*>(prop->mData);
+                        std::string str(prop->mData + 4, strLength);
+
+                        if (std::string key = prop->mKey.data; key == "$raw.ReflectionFactor|file")
+                        {
+                            //TODO Make it handle by filesystem
+                            std::filesystem::path path = filename;
+                            auto parentPath = path.parent_path();
+                            parentPath /= std::string(aiTexPath.data);
+                            auto texturePath = parentPath.string();
+                            VI_CORE_INFO("    Metalness map path = {0}", texturePath);
+
+                            auto texture = Texture2D::create(texturePath);
+
+                            metalnessTextureFound = true;
+                            //TODO Make if texture loaded
+                            mTextures.push_back(texture);
+                            //TODO Set Metallnes texture
+                            //TODO set metallnes to 1.0f
+                            break;
+                        }
+                    }
+                }
+
+                fallback = !metalnessTextureFound;
+                if(fallback)
+                {
+                    VI_CORE_INFO("    No metalness map");
+                    //TODO Set black texture
+                    //TODO Set metallness.
                 }
             }
+            VI_CORE_INFO("------------------------");
         }
         else
         {
             VI_CORE_INFO("Defaults Materials for: {0}", filename);
+            //TODO Create default material
         }
 
         traverseNodes(scene->mRootNode);
@@ -192,6 +353,31 @@ namespace Viking
             });
 
         mIndexBuffer = IndexBuffer::create(mIndices.data(), mIndices.size() * sizeof(Index));
+
+        mVertexArray = VertexArray::create();
+        mVertexArray->addVertexBuffer(mVertexBuffer);
+        mVertexArray->setIndexBuffer(mIndexBuffer);
+    }
+
+    Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<Index>& indices, const glm::mat4& transform): mStaticVertices(vertices), mIndices(indices)
+    {
+        SubMesh submesh;
+        submesh.baseVertex = 0;
+        submesh.baseIndex = 0;
+        submesh.indexCount = static_cast<uint32_t>(indices.size()) * 3u;
+        submesh.transform = transform;
+        mSubMeshes.push_back(submesh);
+
+        mVertexBuffer = VertexBuffer::create(mStaticVertices.data(), static_cast<uint32_t>(mStaticVertices.size()) * sizeof Vertex);
+        mVertexBuffer->setLayout({
+            { ShaderDataType::Float3, "a_Position" },
+            { ShaderDataType::Float3, "a_Normal" },
+            { ShaderDataType::Float3, "a_Tangent" },
+            { ShaderDataType::Float3, "a_Binormal" },
+            { ShaderDataType::Float2, "a_TexCoord" },
+        });
+
+        mIndexBuffer = IndexBuffer::create(mIndices.data(), static_cast<uint32_t>(mIndices.size()) * sizeof Index);
 
         mVertexArray = VertexArray::create();
         mVertexArray->addVertexBuffer(mVertexBuffer);

@@ -50,7 +50,8 @@ namespace Viking
     class Mesh
     {
     public:
-        Mesh(const std::string& filename);
+        explicit Mesh(const std::string& filename);
+        Mesh(const std::vector<Vertex>& vertices, const std::vector<Index>& indices, const glm::mat4& transform);
         ~Mesh() = default;
 
         auto getSubMeshes() -> std::vector<SubMesh>& { return mSubMeshes; }
@@ -64,6 +65,8 @@ namespace Viking
         void traverseNodes(aiNode* node, const glm::mat4& parentTransform = glm::mat4(1.0f), uint32_t level = 0);
 
         std::vector<SubMesh> mSubMeshes;
+        std::vector<Ref<Texture2D>> mTextures;
+
         std::unique_ptr<Assimp::Importer> mImporter;
 
         glm::mat4 mInverseTransform;

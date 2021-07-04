@@ -16,70 +16,70 @@ env:
   BUILD_CONFIGURATION: Release
 
 jobs:
-  build:
-    name: Build Windows 10
-    runs-on: windows-latest
+  # build:
+  #   name: Build Windows 10
+  #   runs-on: windows-latest
 
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        submodules: recursive
+  #   steps:
+  #   - name: Checkout
+  #     uses: actions/checkout@v2
+  #     with:
+  #       submodules: recursive
 
-    - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
+  #   - name: Add MSBuild to PATH
+  #     uses: microsoft/setup-msbuild@v1.0.2
       
-    - name: Install Vulkan SDK
-      uses: humbletim/setup-vulkan-sdk@v1.0.1
-      with:
-        vulkan-version: ${{env.VULKAN_VERSION}}
+  #   - name: Install Vulkan SDK
+  #     uses: humbletim/setup-vulkan-sdk@v1.0.1
+  #     with:
+  #       vulkan-version: ${{env.VULKAN_VERSION}}
 
-    - name: Setup Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.9'
-        architecture: 'x64'
+  #   - name: Setup Python
+  #     uses: actions/setup-python@v2
+  #     with:
+  #       python-version: '3.9'
+  #       architecture: 'x64'
 
-    - name: Download a Vulkan debug libs
-      uses: carlosperate/download-file-action@v1.0.3
-      id: download-vulkan-debug-libs
-      with:
-        file-url: 'https://sdk.lunarg.com/sdk/download/1.2.170.0/windows/VulkanSDK-1.2.170.0-DebugLibs.zip'
-        file-name: 'VulkanSDK-DebugLibs.zip'
-        location: './Viking/Vendor/'
+  #   - name: Download a Vulkan debug libs
+  #     uses: carlosperate/download-file-action@v1.0.3
+  #     id: download-vulkan-debug-libs
+  #     with:
+  #       file-url: 'https://sdk.lunarg.com/sdk/download/1.2.170.0/windows/VulkanSDK-1.2.170.0-DebugLibs.zip'
+  #       file-name: 'VulkanSDK-DebugLibs.zip'
+  #       location: './Viking/Vendor/'
 
-    - name: Extract Vulkan debug libs
-      shell: pwsh
-      run: Expand-Archive -Path Viking\Vendor\VulkanSDK-DebugLibs.zip -DestinationPath Viking\Vendor\VulkanSDK
+  #   - name: Extract Vulkan debug libs
+  #     shell: pwsh
+  #     run: Expand-Archive -Path Viking\Vendor\VulkanSDK-DebugLibs.zip -DestinationPath Viking\Vendor\VulkanSDK
 
-    - name: Download a Premake5
-      uses: carlosperate/download-file-action@v1.0.3
-      id: download-premake
-      with:
-        file-url: 'https://github.com/premake/premake-core/releases/download/v5.0.0-alpha16/premake-5.0.0-alpha16-windows.zip'
-        file-name: 'premake-windows.zip'
-        location: './Vendor/premake/bin'
+  #   - name: Download a Premake5
+  #     uses: carlosperate/download-file-action@v1.0.3
+  #     id: download-premake
+  #     with:
+  #       file-url: 'https://github.com/premake/premake-core/releases/download/v5.0.0-alpha16/premake-5.0.0-alpha16-windows.zip'
+  #       file-name: 'premake-windows.zip'
+  #       location: './Vendor/premake/bin'
 
-    - name: Extract Premake5
-      shell: pwsh
-      run: Expand-Archive -Path Vendor\premake\bin\premake-windows.zip -DestinationPath Vendor\premake\bin
+  #   - name: Extract Premake5
+  #     shell: pwsh
+  #     run: Expand-Archive -Path Vendor\premake\bin\premake-windows.zip -DestinationPath Vendor\premake\bin
 
-    - name: Run setup
-      shell: cmd
-      run: Setup.bat
+  #   - name: Run setup
+  #     shell: cmd
+  #     run: Setup.bat
 
-    - name: Run premake
-      shell: cmd
-      run: Scripts\Win-GenProjects.bat
+  #   - name: Run premake
+  #     shell: cmd
+  #     run: Scripts\Win-GenProjects.bat
 
-    - name: Build
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      # Add additional options to the MSBuild command line here (like platform or verbosity level).
-      # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
-      run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
+  #   - name: Build
+  #     working-directory: ${{env.GITHUB_WORKSPACE}}
+  #     # Add additional options to the MSBuild command line here (like platform or verbosity level).
+  #     # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
+  #     run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
       
   analyze:
-    needs: build
+    # needs: build
     name: CodeQL Analyze
     runs-on: windows-latest
     permissions:
