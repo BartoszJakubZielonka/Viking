@@ -30,6 +30,8 @@ namespace Viking {
 
         Ref<Texture2D> whitTexture{ nullptr };
 
+        Ref<Library<Shader>> ShaderLibrary{nullptr};
+
         std::array<Ref<Texture2D>, MAX_TEXTURE_SLOTS> textureSlots;
         uint32_t textureSlotIndex{ 1 }; // 0 -> whiteTexture
 
@@ -51,7 +53,11 @@ namespace Viking {
         RenderCommand::init();
         Renderer2D::init();
 
-        sData.meshShader = Shader::create(R"(assets/shaders/testShader.glsl)");
+        //Shader library
+        sData.ShaderLibrary = createRef<Library<Shader>>();
+        sData.ShaderLibrary->add("testShader", "assets/shaders/testShader.glsl");
+
+        sData.meshShader = sData.ShaderLibrary->get("testShader");
 
         sData.whitTexture = Texture2D::create(1, 1);
         auto whiteTextureData{ 0xffffffff };
@@ -94,6 +100,11 @@ namespace Viking {
     {
         VI_PROFILE_FUNCTION();
         drawMesh(src.mesh, transform, entityID);
+    }
+
+    Ref<Library<Shader>> Renderer::getShaderLibrary()
+    {
+        return sData.ShaderLibrary;
     }
 
     void Renderer::drawMesh(const Ref<Mesh>& mesh, const glm::mat4& transform, int32_t entityId)

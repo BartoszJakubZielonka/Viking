@@ -5,6 +5,8 @@
 #ifndef VIKING_RENDERER_H
 #define VIKING_RENDERER_H
 
+#include "Viking/Filesystem/Library.h"
+
 #include "Viking/Renderer/RenderCommand.h"
 
 #include "Viking/Renderer/Camera.h"
@@ -27,9 +29,8 @@ namespace Viking {
 
         static void submitMesh(const glm::mat4& transform, MeshRendererComponent& src, int entityID);
 
-        static void submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform = glm::mat4(1.0f));
-
         static RendererAPI::API getAPI() { return RendererAPI::getAPI(); }
+        static Ref<Library<Shader>> getShaderLibrary();
     private:
         static void drawMesh(const Ref<Mesh>& mesh, const glm::mat4& transform, int32_t entityId);
 

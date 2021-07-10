@@ -12,6 +12,8 @@
 #include <assimp/DefaultLogger.hpp>
 #include <assimp/LogStream.hpp>
 
+#include "Renderer.h"
+
 namespace Viking
 {
     glm::mat4 mat4FromAssimpMat4(const aiMatrix4x4& matrix)
@@ -63,6 +65,8 @@ namespace Viking
             VI_CORE_ERROR("Failed to load mesh file: {0}", filename);
 
         mScene = scene;
+
+        mMeshShader = Renderer::getShaderLibrary()->get("meshShader");
 
         mInverseTransform = glm::inverse(mat4FromAssimpMat4(scene->mRootNode->mTransformation));
 
@@ -123,20 +127,19 @@ namespace Viking
             VI_CORE_INFO("Materials: {0}", filename);
 
             mTextures.resize(scene->mNumMaterials);
-            //TODO: Resize material vector
+            mMaterials.resize(scene->mNumMaterials);
 
             //TODO: Read white texture
             //TODO: Read black texture
 
             //TODO consider use for each
-            for(auto it{0}; it < scene->mNumMaterials; it++)
+            for(uint32_t it{0}; it < scene->mNumMaterials; it++)
             {
                 auto aiMaterial = scene->mMaterials[it];
                 auto aiMaterialName = aiMaterial->GetName();
 
-                //TODO: Create material
-                //auto material = Material::create(mMeshShader, aiMaterialName.data);
-                //mMaterials[it] = mi;
+                auto material = Material::create(aiMaterialName.data, mMeshShader);
+                mMaterials[it] = material;
 
                 VI_CORE_INFO("  {0} (Index = {1})", aiMaterialName.data, it);
 

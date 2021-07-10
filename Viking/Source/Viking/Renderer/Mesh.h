@@ -3,6 +3,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 
+#include "Viking/Renderer/Material.h"
 #include "Viking/Renderer/Shader.h"
 #include "Viking/Renderer/Texture.h"
 #include "Viking/Renderer/IndexBuffer.h"
@@ -80,6 +81,9 @@ namespace Viking
 
         const aiScene* mScene;
 
+        //Materials
+        Ref<Shader> mMeshShader;
+        std::vector<Ref<Material>> mMaterials;
 
         std::unordered_map<uint32_t, std::vector<Triangle>> mTriangleCache;
 

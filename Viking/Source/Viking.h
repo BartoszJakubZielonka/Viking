@@ -38,6 +38,7 @@
 #include "Viking/Renderer/Framebuffer.h"
 #include "Viking/Renderer/Texture.h"
 #include "Viking/Renderer/VertexArray.h"
+#include "Viking/Renderer/Material.h"
 
 #include "Viking/Renderer/OrthographicCamera.h"
 // -----------------------------------
