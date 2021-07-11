@@ -30,7 +30,11 @@ namespace Viking {
         static void submitMesh(const glm::mat4& transform, MeshRendererComponent& src, int entityID);
 
         static RendererAPI::API getAPI() { return RendererAPI::getAPI(); }
+
         static Ref<Library<Shader>> getShaderLibrary();
+
+        static Ref<Texture2D> getWhiteTexture();
+        static Ref<Texture2D> getBlackTexture();
     private:
         static void drawMesh(const Ref<Mesh>& mesh, const glm::mat4& transform, int32_t entityId);
 

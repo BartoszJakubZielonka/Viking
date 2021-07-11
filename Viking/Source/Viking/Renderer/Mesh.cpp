@@ -129,8 +129,8 @@ namespace Viking
             mTextures.resize(scene->mNumMaterials);
             mMaterials.resize(scene->mNumMaterials);
 
-            //TODO: Read white texture
-            //TODO: Read black texture
+            const auto whiteTexture = Renderer::getWhiteTexture();
+            const auto blackTexture = Renderer::getBlackTexture();
 
             //TODO consider use for each
             for(uint32_t it{0}; it < scene->mNumMaterials; it++)
@@ -152,7 +152,7 @@ namespace Viking
                 if(aiMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, aiColor) == AI_SUCCESS)
                     albedoColor = { aiColor.r, aiColor.g, aiColor.b };
 
-                //material->set("u_MaterialUniforms.AlbedoColor", albedoColor);
+                material->set("u_MaterialUniforms.AlbedoColor", albedoColor);
 
                 auto shininess(0.0f), metalness{ 0.0f };
                 if (aiMaterial->Get(AI_MATKEY_SHININESS, shininess) != aiReturn_SUCCESS)

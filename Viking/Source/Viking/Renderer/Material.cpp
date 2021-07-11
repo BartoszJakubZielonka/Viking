@@ -3,10 +3,14 @@
 #include "Material.h"
 #include "Renderer.h"
 
+#include "Platform/OpenGL/OpenGLMaterial.h"
+
 namespace Viking
 {
     Ref<Material> Material::create(const std::string& name, const Ref<Shader>& shader)
     {
+        VI_PROFILE_FUNCTION();
+
         switch (Renderer::getAPI())
         {
         case RendererAPI::API::None:
