@@ -31,7 +31,7 @@ class VulkanConfiguration:
         else:
             print(f"\nLocated Vulkan SDK at {vulkanSDK}")
 
-        vulkanSDKVersion = os.environ.get("VULKAN_VERSION")
+        vulkanSDKVersion = os.environ.get("VULKAN_SDK")
         if (cls.requiredVulkanVersion not in vulkanSDKVersion):
             print(f"You don't have the correct Vulkan SDK version! (Engine requires {cls.requiredVulkanVersion})")
             cls.__InstallVulkanSDK()

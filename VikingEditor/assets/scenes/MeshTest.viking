@@ -8,7 +8,7 @@ Entities:
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     MeshRendererComponent:
-      Path: D:\Projekty\Viking\VikingEditor\assets\meshes\backpack\backpack.obj
+      Path: assets\meshes\backpack\backpack.obj
   - Entity: 12837192831273
     TagComponent:
       Tag: Camera

@@ -57,6 +57,7 @@ namespace Viking {
         //Shader library
         sData.ShaderLibrary = createRef<Library<Shader>>();
         sData.ShaderLibrary->add("testShader", "assets/shaders/testShader.glsl");
+        sData.ShaderLibrary->add("meshShader", "assets/shaders/meshShader.glsl");
 
         sData.meshShader = sData.ShaderLibrary->get("testShader");
 
